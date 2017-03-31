@@ -1,0 +1,840 @@
+CustomInputFormat Assignment
+
+-----------------------------------
+Driver
+-----------------------------------
+package com.practice.hadoop.mapreduce.customInputFormat;
+
+import java.io.IOException;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.Job;
+
+public class CustomInputFormatFile {
+
+  public static void main(String[] args) 
+                  throws IOException, ClassNotFoundException, InterruptedException {
+    if (args.length != 2) {
+      System.err.println("Usage: <input path> <output path>");
+      System.exit(-1);
+    }
+    
+    Job job = new Job();
+    job.setJarByClass(CustomInputFormatFile.class);
+    job.setJobName("CustomTest");
+    job.setNumReduceTasks(0);
+    job.setMapperClass(MyMapper.class);
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(Text.class);
+    job.setInputFormatClass(MyInputFormat.class);
+    
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    
+    job.waitForCompletion(true);
+  }
+}
+
+-----------------------------------
+Custom Key
+-----------------------------------
+package com.practice.hadoop.mapreduce.customInputFormat;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableComparable;
+
+
+public class MyKey implements WritableComparable{
+	private Text SensorType,timestamp,status;
+	
+	public MyKey(){
+		this.SensorType = new Text();
+		this.timestamp = new Text();
+		this.status = new Text();
+	}
+	public MyKey(Text SensorType,Text timestamp,Text status){
+		this.SensorType = SensorType;
+		this.timestamp = timestamp;
+		this.status = status;		
+	}
+	public void readFields(DataInput in) throws IOException{
+		SensorType.readFields(in);
+		timestamp.readFields(in);
+		status.readFields(in);
+	}
+	
+	public void write(DataOutput out) throws IOException{
+		SensorType.write(out);
+		timestamp.write(out);
+		status.write(out);
+	}
+	public int compareTo(Object o){
+		MyKey other = (MyKey)o;
+		int cmp = SensorType.compareTo(other.SensorType);
+		if(cmp != 0){
+				return cmp;
+		}
+		cmp = timestamp.compareTo(other.timestamp);
+		if(cmp != 0){
+				return cmp;
+		}
+		return status.compareTo(other.status);
+		
+	}
+	public Text getSensorType() {
+		return SensorType;
+	}
+	public void setSensorType(Text sensorType) {
+		SensorType = sensorType;
+	}
+	public Text getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(Text timestamp) {
+		this.timestamp = timestamp;
+	}
+	public Text getStatus() {
+		return status;
+	}
+	public void setStatus(Text status) {
+		this.status = status;
+	}
+	
+
+}
+
+-----------------------------------
+Custom Value
+-----------------------------------
+package com.practice.hadoop.mapreduce.customInputFormat;
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.WritableComparable;
+
+
+public class MyValue implements WritableComparable{
+	private Text value1,value2;
+	
+	public MyValue(){
+		this.value1 = new Text();
+		this.value2 = new Text();
+	}
+	public MyValue(Text value1,Text value2){
+		this.value1 = value1;
+		this.value2 = value2;
+	}
+	public void readFields(DataInput in) throws IOException{
+		value1.readFields(in);
+		value2.readFields(in);
+	}
+	
+	public void write(DataOutput out) throws IOException{
+		value1.write(out);
+		value2.write(out);
+	}
+	public int compareTo(Object o){
+		MyValue other = (MyValue)o;
+		int cmp = value1.compareTo(other.value1);
+		if(cmp != 0){
+				return cmp;
+		}
+		return value2.compareTo(other.value2);
+		
+	}
+	public Text getValue1() {
+		return value1;
+	}
+	public void setValue1(Text value1) {
+		this.value1 = value1;
+	}
+	public Text getValue2() {
+		return value2;
+	}
+	public void setValue2(Text value2) {
+		this.value2 = value2;
+	}
+
+}
+
+-----------------------------------
+Custom Input Format
+-----------------------------------
+package com.practice.hadoop.mapreduce.customInputFormat;
+
+import java.io.IOException;
+
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+
+
+
+
+public class MyInputFormat extends FileInputFormat<MyKey,MyValue> {
+	
+	
+	@Override
+	public RecordReader<MyKey, MyValue> createRecordReader(InputSplit arg0,
+			TaskAttemptContext arg1) throws IOException, InterruptedException {
+		return new MyRecordReader();
+	}	
+}
+
+
+-----------------------------------
+Custom Data Reader
+-----------------------------------
+package com.practice.hadoop.mapreduce.customInputFormat;
+import java.io.IOException;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.RecordReader;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.LineRecordReader;
+
+
+public class MyRecordReader extends RecordReader<MyKey,MyValue> {
+
+	private MyKey key;
+	private MyValue value;
+	private LineRecordReader reader = new LineRecordReader();
+	@Override
+	public void close() throws IOException {
+		// TODO Auto-generated method stub
+		reader.close();
+	}
+
+	@Override
+	public MyKey getCurrentKey() throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		return key;
+	}
+
+	@Override
+	public MyValue getCurrentValue() throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		return value;
+	}
+
+	@Override
+	public float getProgress() throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		return reader.getProgress();
+	}
+
+	@Override
+	public void initialize(InputSplit is, TaskAttemptContext tac)
+			throws IOException, InterruptedException {
+		reader.initialize(is, tac);
+		
+	}
+
+	@Override
+	public boolean nextKeyValue() throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
+		
+		boolean gotNextKeyValue = reader.nextKeyValue();
+		if(gotNextKeyValue){
+			if(key==null){
+				key = new MyKey();
+			}
+			if(value == null){
+				value = new MyValue();
+			}
+			Text line = reader.getCurrentValue();
+			String[] tokens = line.toString().split("\t");
+			key.setSensorType(new Text(tokens[0]));
+			key.setTimestamp(new Text(tokens[1]));
+			key.setStatus(new Text(tokens[2]));
+			value.setValue1(new Text(tokens[3]));
+			value.setValue2(new Text(tokens[4]));
+		}
+		else {
+			key = null;
+			value = null;
+		}
+		return gotNextKeyValue;
+	}
+
+}
+
+
+
+-----------------------------------
+Mapper
+-----------------------------------
+package com.practice.hadoop.mapreduce.customInputFormat;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class MyMapper extends Mapper<MyKey, MyValue, Text, Text> {
+        
+          protected void map(MyKey key, MyValue value, Context context)
+              throws java.io.IOException, InterruptedException {
+        	  
+            String sensor = key.getSensorType().toString();
+            
+            if(sensor.toLowerCase().equals("a")){
+            	context.write(value.getValue1(),value.getValue2());
+            }
+            		
+          }  
+}
+-----------------------------------
+output
+-----------------------------------
+
+[edureka@localhost Desktop]$ hdfs dfs -cat /customInputFormatOutput/part-m-00000
+17/03/15 06:19:43 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+22	23
+------------------------------------------------------------------------------------------------------
+
+Custom Counter MapReduce
+---------------------------
+
+package com.practice.hadoop.mapreduce.CustomCounter;
+
+import java.io.IOException;
+import java.util.Date;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Counter;
+import org.apache.hadoop.mapreduce.Counters;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class MyCounter {
+	
+	public static enum MONTH{
+		DEC,
+		JAN,
+		FEB
+	};
+	
+	
+	
+	public static class MyMapper extends Mapper<LongWritable,Text, Text, Text> {
+        private Text out = new Text();
+        protected void map(LongWritable key, Text value, Context context)
+            throws java.io.IOException, InterruptedException {
+        	String line = value.toString();
+        	String[]  strts = line.split(",");
+        	long lts = Long.parseLong(strts[1]);
+        	Date time = new Date(lts);
+        	int m = time.getMonth();
+        	
+        	if(m==11){
+        		context.getCounter(MONTH.DEC).increment(10);	
+        	}
+        	if(m==0){      	  	
+      	  		context.getCounter(MONTH.JAN).increment(20);
+        	}
+        	if(m==1){
+      	  		context.getCounter(MONTH.FEB).increment(30);
+        	}
+      	  	out.set("success");
+      	  context.write(out,out);
+        }  
+}
+	
+	
+  public static void main(String[] args) 
+                  throws IOException, ClassNotFoundException, InterruptedException {
+    
+    Job job = new Job();
+    job.setJarByClass(MyCounter.class);
+    job.setJobName("CounterTest");
+    job.setNumReduceTasks(0);
+    job.setMapperClass(MyMapper.class);
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(Text.class);
+    
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    
+    job.waitForCompletion(true);
+    
+    Counters counters = job.getCounters();
+    
+    Counter c1 = counters.findCounter(MONTH.DEC);
+    System.out.println(c1.getDisplayName()+ " : " + c1.getValue());
+    c1 = counters.findCounter(MONTH.JAN);
+    System.out.println(c1.getDisplayName()+ " : " + c1.getValue());
+    c1 = counters.findCounter(MONTH.FEB);
+    System.out.println(c1.getDisplayName()+ " : " + c1.getValue());
+    
+  }
+}
+
+-------------------------------
+Counter Assignment Output 
+-------------------------------
+
+[edureka@localhost shradha]$ hadoop jar hadoop-practice-1.0-SNAPSHOT.jar /CounterInput.txt /CounterOutput
+17/03/15 06:55:47 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+17/03/15 06:55:47 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+17/03/15 06:55:48 WARN mapreduce.JobSubmitter: Hadoop command-line option parsing not performed. Implement the Tool interface and execute your application with ToolRunner to remedy this.
+17/03/15 06:55:48 INFO input.FileInputFormat: Total input paths to process : 1
+17/03/15 06:55:48 INFO mapreduce.JobSubmitter: number of splits:1
+17/03/15 06:55:48 INFO Configuration.deprecation: user.name is deprecated. Instead, use mapreduce.job.user.name
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.jar is deprecated. Instead, use mapreduce.job.jar
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.mapoutput.value.class is deprecated. Instead, use mapreduce.map.output.value.class
+17/03/15 06:55:48 INFO Configuration.deprecation: mapreduce.map.class is deprecated. Instead, use mapreduce.job.map.class
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.job.name is deprecated. Instead, use mapreduce.job.name
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.input.dir is deprecated. Instead, use mapreduce.input.fileinputformat.inputdir
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.output.dir is deprecated. Instead, use mapreduce.output.fileoutputformat.outputdir
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.map.tasks is deprecated. Instead, use mapreduce.job.maps
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.mapoutput.key.class is deprecated. Instead, use mapreduce.map.output.key.class
+17/03/15 06:55:48 INFO Configuration.deprecation: mapred.working.dir is deprecated. Instead, use mapreduce.job.working.dir
+17/03/15 06:55:48 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1487559629557_0105
+17/03/15 06:55:48 INFO impl.YarnClientImpl: Submitted application application_1487559629557_0105 to ResourceManager at /0.0.0.0:8032
+17/03/15 06:55:48 INFO mapreduce.Job: The url to track the job: http://localhost:8088/proxy/application_1487559629557_0105/
+17/03/15 06:55:48 INFO mapreduce.Job: Running job: job_1487559629557_0105
+17/03/15 06:55:53 INFO mapreduce.Job: Job job_1487559629557_0105 running in uber mode : false
+17/03/15 06:55:53 INFO mapreduce.Job:  map 0% reduce 0%
+17/03/15 06:55:58 INFO mapreduce.Job:  map 100% reduce 0%
+17/03/15 06:55:59 INFO mapreduce.Job: Job job_1487559629557_0105 completed successfully
+17/03/15 06:55:59 INFO mapreduce.Job: Counters: 29
+	File System Counters
+		FILE: Number of bytes read=0
+		FILE: Number of bytes written=78895
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=178
+		HDFS: Number of bytes written=64
+		HDFS: Number of read operations=5
+		HDFS: Number of large read operations=0
+		HDFS: Number of write operations=2
+	Job Counters 
+		Launched map tasks=1
+		Data-local map tasks=1
+		Total time spent by all maps in occupied slots (ms)=2409
+		Total time spent by all reduces in occupied slots (ms)=0
+	Map-Reduce Framework
+		Map input records=4
+		Map output records=4
+		Input split bytes=103
+		Spilled Records=0
+		Failed Shuffles=0
+		Merged Map outputs=0
+		GC time elapsed (ms)=47
+		CPU time spent (ms)=260
+		Physical memory (bytes) snapshot=54439936
+		Virtual memory (bytes) snapshot=360071168
+		Total committed heap usage (bytes)=16252928
+	com.practice.hadoop.mapreduce.CustomCounter.MyCounter$MONTH
+		DEC=10
+		JAN=60
+	File Input Format Counters 
+		Bytes Read=75
+	File Output Format Counters 
+		Bytes Written=64
+DEC : 10
+JAN : 60
+FEB : 0
+
+
+------------------------------------------------------------------------------------------------------
+CombinerPartitioner
+----------------------
+
+package com.practice.hadoop.mapreduce.CombinerPartitioner;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.FileInputFormat;
+import org.apache.hadoop.mapred.FileOutputFormat;
+import org.apache.hadoop.mapred.JobClient;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.MapReduceBase;
+import org.apache.hadoop.mapred.Mapper;
+import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.Partitioner;
+import org.apache.hadoop.mapred.Reducer;
+import org.apache.hadoop.mapred.Reporter;
+import org.apache.hadoop.mapred.TextInputFormat;
+import org.apache.hadoop.mapred.TextOutputFormat;
+
+public class CombinerPartitioner {
+
+	public static class Map extends MapReduceBase implements
+			Mapper<LongWritable, Text, Text, IntWritable> {
+
+		@Override
+		public void map(LongWritable key, Text value,
+				OutputCollector<Text, IntWritable> output, Reporter reporter)
+				throws IOException {
+
+			String line = value.toString();
+			StringTokenizer tokenizer = new StringTokenizer(line);
+
+			while (tokenizer.hasMoreTokens()) {
+				value.set(tokenizer.nextToken());
+				output.collect(value, new IntWritable(1));
+
+				// // I am fine I am fine
+				// v
+				// I 1
+				// am 1
+				// fine 1
+				// I 1
+				// am 1
+				// fine 1
+
+				// I (1,1)
+
+			}
+
+		}
+	}
+
+	// Output types of Mapper should be same as arguments of Partitioner
+	public static class MyPartitioner implements Partitioner<Text, IntWritable> {
+
+		@Override
+		public int getPartition(Text key, IntWritable value, int numPartitions) {
+
+			String myKey = key.toString().toLowerCase();
+
+			if (myKey.equals("hadoop")) {
+				return 0;
+			}
+			if (myKey.equals("data")) {
+				return 1;
+			} else {
+				return 2;
+			}
+		}
+
+		@Override
+		public void configure(JobConf arg0) {
+
+			// Gives you a new instance of JobConf if you want to change Job
+			// Configurations
+
+		}
+	}
+
+	public static class Reduce extends MapReduceBase implements
+			Reducer<Text, IntWritable, Text, IntWritable> {
+
+		@Override
+		public void reduce(Text key, Iterator<IntWritable> values,
+				OutputCollector<Text, IntWritable> output, Reporter reporter)
+				throws IOException {
+
+			int sum = 0;
+			while (values.hasNext()) {
+				sum += values.next().get();
+				// sum = sum + 1;
+			}
+
+			// beer,3
+
+			output.collect(key, new IntWritable(sum));
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		JobConf conf = new JobConf(CombinerPartitioner.class);
+		conf.setJobName("CombinerPartitioner");
+
+		// Forcing program to run 3 reducers
+		conf.setNumReduceTasks(3);
+
+		conf.setMapperClass(Map.class);
+		conf.setCombinerClass(Reduce.class);
+		conf.setReducerClass(Reduce.class);
+		conf.setPartitionerClass(MyPartitioner.class);
+
+		conf.setOutputKeyClass(Text.class);
+		conf.setOutputValueClass(IntWritable.class);
+
+		conf.setInputFormat(TextInputFormat.class);
+		conf.setOutputFormat(TextOutputFormat.class);
+
+		 FileInputFormat.setInputPaths(conf, new Path(args[0]));
+		 FileOutputFormat.setOutputPath(conf, new Path(args[1]));
+		 
+		JobClient.runJob(conf);
+	}
+}
+
+
+------------------------------------------------------------------------------------------------------
+Dustributed Cache
+----------------------
+package com.practice.hadoop.mapreduce.DistributedCache;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+
+public class DistributedCacheMR {
+	
+	
+	public static class MyMapper extends Mapper<LongWritable,Text, Text, Text> {
+        
+		
+		private Map<String, String> abbrMap = new HashMap<String, String>();
+				private Text outputKey = new Text();
+				private Text outputValue = new Text();
+
+		protected void setup(Context context) throws java.io.IOException, InterruptedException {
+			if (context.getCacheFiles() != null && context.getCacheFiles().length > 0) {
+				File abcFile = new File("abc.dat");
+				BufferedReader reader = new BufferedReader(new FileReader(abcFile.getName()));
+				String line = reader.readLine();
+				while (line != null) {
+					String[] tokens = line.split("\t");
+					String ab = tokens[0];
+					String state = tokens[1];
+					abbrMap.put(ab, state);
+					line = reader.readLine();
+				}
+			}
+			if (abbrMap.isEmpty()) {
+				throw new IOException("Unable to load Abbreviation data.");
+			}
+		}
+
+		
+        protected void map(LongWritable key, Text value, Context context)
+            throws java.io.IOException, InterruptedException {
+        	
+        	
+        	String row = value.toString();
+        	String[] tokens = row.split("\t");
+        	String inab = tokens[0];
+        	String state = abbrMap.get(inab);
+        	outputKey.set(state);
+        	outputValue.set(row);
+      	  	context.write(outputKey,outputValue);
+        }  
+}
+	
+	
+  public static void main(String[] args) 
+                  throws IOException, ClassNotFoundException, InterruptedException {
+    
+    Job job = new Job();
+    job.setJarByClass(DistributedCacheMR.class);
+    job.setJobName("DistributedCacheExample");
+    job.setNumReduceTasks(0);
+    
+    try{
+		job.addCacheFile(new URI("/abc.dat"));
+    }catch(Exception e){
+    	System.out.println(e);
+    }
+    
+    job.setMapperClass(MyMapper.class);
+    
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(Text.class);
+    
+    FileInputFormat.addInputPath(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+    
+    job.waitForCompletion(true);
+    
+    
+  }
+}
+
+
+--------------------------------
+Distributed Cache Output
+--------------------------------
+[edureka@localhost DistributedCache]$ hdfs dfs -cat /dcoutput/part-m-00000
+17/03/15 09:00:29 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Uttar_Pradesh	up	199654321
+Maharashtra	ma	112328654
+Bihar	bi	103876487
+WestBengal	wb	91765349
+
+---------------------------------------------------------------------------------------------------
+Reduce Side Join 
+-------------------
+package com.practice.hadoop.mapreduce.ReduceSideJoin;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class ReduceJoin {
+
+	public static class CustsMapper extends
+			Mapper<Object, Text, Text, Text> {
+		public void map(Object key, Text value, Context context)
+				throws IOException, InterruptedException {
+			String record = value.toString();
+			String[] parts = record.split(",");
+			context.write(new Text(parts[0]), new Text("custs\t" + parts[1]));
+		}
+	}
+
+	public static class TxnsMapper extends
+			Mapper<Object, Text, Text, Text> {
+		public void map(Object key, Text value, Context context)
+				throws IOException, InterruptedException {
+			String record = value.toString();
+			String[] parts = record.split(",");
+			context.write(new Text(parts[2]), new Text("txns\t" + parts[3]));
+		}
+	}
+
+	public static class ReduceJoinReducer extends
+			Reducer<Text, Text, Text, Text> {
+		public void reduce(Text key, Iterable<Text> values, Context context)
+				throws IOException, InterruptedException {
+			String name = "";
+			double total = 0.0;
+			int count = 0;
+			for (Text t : values) {
+				String parts[] = t.toString().split("\t");
+				if (parts[0].equals("txns")) {
+					count++;
+					total += Float.parseFloat(parts[1]);
+				} else if (parts[0].equals("custs")) {
+					name = parts[1];
+				}
+			}
+			String str = String.format("%d\t%f", count, total);
+			context.write(new Text(name), new Text(str));
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		Configuration conf = new Configuration();
+		Job job = new Job(conf, "Reduce-side join");
+		job.setJarByClass(ReduceJoin.class);
+		job.setReducerClass(ReduceJoinReducer.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
+		
+	
+		MultipleInputs.addInputPath(job, new Path(args[0]),TextInputFormat.class, CustsMapper.class);
+		MultipleInputs.addInputPath(job, new Path(args[1]),TextInputFormat.class, TxnsMapper.class);
+		Path outputPath = new Path(args[2]);
+		
+		
+		FileOutputFormat.setOutputPath(job, outputPath);
+		outputPath.getFileSystem(conf).delete(outputPath);
+		System.exit(job.waitForCompletion(true) ? 0 : 1);
+	}
+}
+
+-----------------------------------
+Reduce Side join Output
+-----------------------------------
+[edureka@localhost shradha]$ hdfs dfs -cat /ReduceSideJoinOutput/part-r-00000
+17/03/15 09:30:25 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Kristina	8	651.049999
+Paige	6	706.970007
+Sherri	3	527.589996
+Gretchen	5	337.060005
+Karen	5	325.150005
+Patrick	5	539.380010
+Elsie	6	699.550003
+Hazel	10	859.419990
+Malcolm	6	457.829996
+Dolores	6	447.090004
+
+---------------------------------------------------------------------------------------------------
+
+MRUnit Example
+------------------
+package com.practice.hadoop.mapreduce.MRUnit;
+
+import java.io.IOException;
+
+import junit.framework.TestCase;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mrunit.mapreduce.*;
+import org.junit.Test;
+
+
+public class MapReduceJunitTest extends TestCase {
+
+    public static class MapTest extends Mapper<LongWritable, Text, Text, IntWritable> {
+        Text day = new Text();
+
+        public void map(LongWritable key, Text value, Context ctx) throws IOException, InterruptedException {
+            String[] line = value.toString().split(",");
+            int val = Integer.parseInt(line[0]);
+            day.set(line[1]);
+            ctx.write(day, new IntWritable(val));
+
+        }
+    }
+
+    MapDriver<LongWritable, Text, Text, IntWritable> mapDriver;
+
+    public void setUp() {
+        new MapTest();
+        mapDriver = MapDriver.newMapDriver(new MapTest());
+    }
+
+    @Test
+    public void testMapper() {
+        try {
+            mapDriver.withInput(new LongWritable(), new Text("1,sunday,abhay,holiday"))
+                    .withOutput(new Text("sunday"), new IntWritable(1))
+                    .runTest();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+}
+
+---------------------------------------------------------------------------------------------------

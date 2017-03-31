@@ -1,0 +1,1 @@
+This is my word count program where I am going to write the aggregated output based on length of the string and how many of those length exist.

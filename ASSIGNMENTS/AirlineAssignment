@@ -1,0 +1,719 @@
+1. Find list of Airports operating in the Country India
+---------------------------------------------------------
+Mapper
+-------
+package com.practice.hadoop.mapreduce.FinalProject;
+
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+/**
+ * Created by khard on 3/8/17.
+ */
+public class IndiaAirportMap extends Mapper<LongWritable, Text, Text, Text> {
+    @Override
+    public void map(LongWritable mapKey, Text mapValue, Context context) throws IOException, InterruptedException {
+        String line = mapValue.toString();
+        String[] strings = line.split(",");
+        String airportID = strings[0];
+        String airportName = strings[1];
+        String countryName = strings[3];
+
+        if(countryName.equalsIgnoreCase("India")){
+            context.write(new Text(countryName), new Text(airportID + "\t" + airportName));
+        }
+    }
+}
+
+
+Driver
+-------
+package com.practice.hadoop.mapreduce.FinalProject;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+/**
+ * Created by khard on 3/8/17.
+ */
+public class IndianAirportDriver {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration();
+        Job job = new Job(conf, "Mapper_Only_IndianAirports");
+
+        job.setJarByClass(IndianAirportDriver.class);
+        job.setMapperClass(IndiaAirportMap.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        // Sets reducer tasks to 0
+        job.setNumReduceTasks(0);
+
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        boolean result = job.waitForCompletion(true);
+
+        System.exit(result ? 0 : 1);
+    }
+}
+
+
+Output -Also see the attachement
+----------------------------------
+India	2994	Ahmedabad
+India	2995	Akola
+India	2996	Aurangabad
+India	2997	Chhatrapati Shivaji Intl
+India	2998	Bilaspur
+India	2999	Bhuj
+India	3000	Belgaum
+India	3001	Vadodara
+India	3002	Bhopal
+India	3003	Bhavnagar
+India	3004	Daman
+India	3005	Deesa
+India	3006	Guna
+India	3007	Goa
+India	3008	Devi Ahilyabai Holkar
+India	3009	Jabalpur
+India	3010	Jamnagar
+India	3011	Kandla
+India	3012	Khajuraho
+India	3013	Kolhapur
+India	3014	Keshod
+India	3015	Dr Ambedkar Intl
+India	3016	Nasik Road
+India	3017	Pune
+India	3018	Porbandar
+India	3019	Rajkot
+India	3020	Raipur
+India	3021	Sholapur
+India	3022	Surat
+India	3023	Udaipur
+India	3037	Along
+India	3038	Agartala
+India	3039	Aizawl
+India	3040	Bagdogra
+India	3041	Bokaro
+India	3042	Bhubaneshwar
+India	3043	Netaji Subhash Chandra Bose Intl
+India	3044	Cooch Behar
+India	3045	Dhanbad
+India	3048	Gaya
+India	3049	Hirakud
+India	3050	Imphal
+India	3051	Jharsuguda
+India	3052	Jamshedpur
+India	3053	Jorhat
+India	3054	Kailashahar
+India	3055	Silchar
+India	3056	Lilabari
+India	3057	Dibrugarh
+India	3058	Muzaffarpur
+India	3059	Nawapara
+India	3060	Panagarh
+India	3061	Patna
+India	3062	Purnea
+India	3063	Birsa Munda
+India	3064	Rourkela
+India	3065	Utkela
+India	3066	Vishakhapatnam
+India	3067	Zero
+India	3079	Agra
+India	3080	Allahabad
+India	3081	Amritsar
+India	3082	Nal
+India	3083	Bakshi Ka Talab
+India	3084	Varanasi
+India	3085	Kullu Manali
+India	3086	Bhatinda
+India	3087	Bhiwani
+India	3088	Bareilly
+India	3089	Chandigarh
+India	3090	Kanpur Chakeri
+India	3091	Safdarjung
+India	3092	Dehradun
+India	3093	Indira Gandhi Intl
+India	3094	Gwalior
+India	3095	Hissar
+India	3096	Jhansi
+India	3097	Jodhpur
+India	3098	Jaipur
+India	3099	Jaisalmer
+India	3100	Jammu
+India	3101	Kanpur
+India	3102	Kota
+India	3103	Ludhiana
+India	3104	Leh
+India	3105	Lucknow
+India	3106	Pathankot
+India	3107	Patiala
+India	3108	Pantnagar
+India	3109	Fursatganj
+India	3111	Sarsawa
+India	3112	Srinagar
+India	3113	Satna
+India	3130	Agatti
+India	3131	Bangalore
+India	3132	Bellary
+India	3133	Bidar
+India	3134	Vijayawada
+India	3135	Coimbatore
+India	3136	Cochin
+India	3137	Calicut
+India	3138	Cuddapah
+India	3139	Carnicobar
+India	3140	Dundigul
+India	3141	Hyderabad
+India	3142	Madurai
+India	3143	Mangalore
+India	3144	Chennai Intl
+India	3145	Nagarjuna Sagar
+India	3146	Port Blair
+India	3147	Pondicherry
+India	3148	Rajahmundry
+India	3149	Salem
+India	3150	Tanjore
+India	3151	Tirupati
+India	3152	Trichy
+India	3153	Thiruvananthapuram Intl
+India	3154	Tambaram
+India	5711	Diu Airport
+India	6168	Hubli Airport
+India	6172	Shillong Airport
+India	6173	Lokpriya Gopinath Bordoloi International Airport
+India	6174	Dimapur Airport
+India	6175	Tezpur Airport
+India	6443	Dibrugarh Airport
+India	6762	Shimla Airport
+India	6761	Nanded Airport
+India	6760	Kangra Airport
+India	6741	Gorakhpur Airport
+India	7535	Latur Airport
+India	7774	Mysore Airport
+India	8660	Nagaur Airport
+India	8755	New Delhi Train Station
+India	8756	Agra Cantonment Railway Station
+India	8788	Gangtok Helipad
+India	8970	Havelock Island Seaport
+India	9053	Yelahanka AFB
+India	9300	Mormugao-Goa Port
+India	9301	Cochin Port
+India	9489	Helipad of Viraj Group
+-----------------------------------------------------------------------------------------------------
+2. Find the list of Airlines having zero stops
+---------------------------------------------------------------------------
+Airline Mapper -- Loads Airlines data and produces intermediate key-values
+---------------------------------------------------------------------------
+
+package com.practice.hadoop.mapreduce.FinalProject;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+/**
+ * Created by khard on 3/15/17.
+ */
+public class AirlinesAirlineMapper extends Mapper<LongWritable, Text, Text, Text> {
+    @Override
+    public void map(LongWritable inKey, Text inValue, Context context) throws IOException, InterruptedException {
+
+        String airlines = inValue.toString();
+        String[] airlineDetails = airlines.split(",");
+        String airlineId = airlineDetails[0];
+        String airlineName = airlineDetails[1];
+
+        context.write(new Text(airlineId), new Text("airlineName," + airlineName));
+    }
+}
+
+
+---------------------------------------------------------------------------
+Routes Mapper -- Loads Routes data and produces intermediate key-values
+---------------------------------------------------------------------------
+package com.practice.hadoop.mapreduce.FinalProject;
+
+import java.io.IOException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+/**
+ * Created by khard on 3/15/17.
+ */
+public class AirlineRouteMapper extends Mapper<LongWritable, Text, Text, Text>{
+    @Override
+    public void map(LongWritable inKey, Text inValue, Context context) throws IOException, InterruptedException {
+        Integer stops = null;
+        String routes = inValue.toString();
+        String[] routeDetails = routes.split(",");
+        String airlineId = routeDetails[1];
+        String codeShare = null;
+        if(routeDetails[7] != null){
+            stops = Integer.parseInt(routeDetails[7]);
+        }
+        if(StringUtils.isNotBlank(routeDetails[6])){
+            codeShare = routeDetails[6];
+        }
+        context.write(new Text(airlineId), new Text("stops," + stops + ",codeShare," + codeShare));
+    }
+}
+
+
+
+
+--------------------------------------------------------------
+Reducer -- Reads 2 mappers output and generates final output
+--------------------------------------------------------------
+package com.practice.hadoop.mapreduce.FinalProject.AirlinesZeroStop;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class AirlineZeroStopReducer extends Reducer<Text, Text, Text, Text> {
+
+    public Map<String, String> airlineMap = new HashMap<>();
+    private Integer stops;
+    private String airlineName;
+    private int count = 0;
+    @Override
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        for(Text text : values){
+            String[] parts = text.toString().split(",");
+            if(parts[0].equalsIgnoreCase("stops")){
+                stops = Integer.valueOf(parts[1]);
+                if(stops.equals(1)){
+                    count++;
+                }
+            }else if(parts[0].equalsIgnoreCase("airlineName")){
+                airlineName = parts[1];
+            }
+        }
+        if(count == 0){
+            context.write(new Text(key), new Text(airlineName));
+        }
+
+    }
+}
+
+
+-------
+Driver
+-------
+package com.practice.hadoop.mapreduce.FinalProject.AirlinesZeroStop;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import com.practice.hadoop.mapreduce.FinalProject.AirlineRouteMapper;
+import com.practice.hadoop.mapreduce.FinalProject.AirlinesAirlineMapper;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class AirlineZeroStopDriver {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration();
+        Job job = new Job(conf, "Mapper_Only_IndianAirports");
+
+        job.setJarByClass(AirlineZeroStopDriver.class);
+        job.setReducerClass(AirlineZeroStopReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        MultipleInputs.addInputPath(job, new Path(args[0]), TextInputFormat.class, AirlinesAirlineMapper.class);
+        MultipleInputs.addInputPath(job, new Path(args[1]),TextInputFormat.class, AirlineRouteMapper.class);
+        Path outputPath = new Path(args[2]);
+
+        FileOutputFormat.setOutputPath(job, outputPath);
+        outputPath.getFileSystem(conf).delete(outputPath);
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
+
+-------------------
+Final Output
+-----------------
+Please check attachement
+
+---------------------------------------------------------------------------------------------------
+3. List of Airlines operating with code share
+-----------------------------------------------
+AirlineMapper
+---------------
+package com.practice.hadoop.mapreduce.FinalProject;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+/**
+ * Created by khard on 3/15/17.
+ */
+public class AirlinesAirlineMapper extends Mapper<LongWritable, Text, Text, Text> {
+    @Override
+    public void map(LongWritable inKey, Text inValue, Context context) throws IOException, InterruptedException {
+
+        String airlines = inValue.toString();
+        String[] airlineDetails = airlines.split(",");
+        String airlineId = airlineDetails[0];
+        String airlineName = airlineDetails[1];
+
+        context.write(new Text(airlineId), new Text("airlineName," + airlineName));
+    }
+}
+
+
+-------------
+RouteMapper
+-------------
+package com.practice.hadoop.mapreduce.FinalProject;
+
+import java.io.IOException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+/**
+ * Created by khard on 3/15/17.
+ */
+public class AirlineRouteMapper extends Mapper<LongWritable, Text, Text, Text>{
+    @Override
+    public void map(LongWritable inKey, Text inValue, Context context) throws IOException, InterruptedException {
+        Integer stops = null;
+        String routes = inValue.toString();
+        String[] routeDetails = routes.split(",");
+        String airlineId = routeDetails[1];
+        String codeShare = null;
+        if(routeDetails[7] != null){
+            stops = Integer.parseInt(routeDetails[7]);
+        }
+        if(StringUtils.isNotBlank(routeDetails[6])){
+            codeShare = routeDetails[6];
+        }
+        context.write(new Text(airlineId), new Text("stops," + stops + ",codeShare," + codeShare));
+    }
+}
+
+---------------------------------
+Airlines With Code Share Reducer
+---------------------------------
+package com.practice.hadoop.mapreduce.FinalProject.AirlinesCodeShare;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class AirlinesCodeShareReducer extends Reducer<Text, Text, Text, Text> {
+    private String airlineName, codeShare;
+    private int count = 0;
+    @Override
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        for(Text text : values){
+            String[] parts = text.toString().split(",");
+            if(parts.length > 2 && parts[2].equalsIgnoreCase("codeShare")){
+                codeShare = parts[3];
+                if(codeShare != null && codeShare.equalsIgnoreCase("Y")){
+                    count++;
+                }
+
+            }else if(parts[0].equalsIgnoreCase("airlineName")){
+                airlineName = parts[1];
+            }
+        }
+        if(count > 1){
+            context.write(new Text(key), new Text(airlineName));
+        }
+
+    }
+}
+
+---------------------------------
+Airlines with Code Share Driver
+---------------------------------
+package com.practice.hadoop.mapreduce.FinalProject.AirlinesCodeShare;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.MultipleInputs;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import com.practice.hadoop.mapreduce.FinalProject.AirlineRouteMapper;
+import com.practice.hadoop.mapreduce.FinalProject.AirlinesAirlineMapper;
+import com.practice.hadoop.mapreduce.FinalProject.AirlinesZeroStop.AirlineZeroStopReducer;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class AirlinesCodeShareDriver {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration();
+        Job job = new Job(conf, "AirlinesWithCodeShare");
+
+        job.setJarByClass(AirlinesCodeShareDriver.class);
+        job.setReducerClass(AirlinesCodeShareReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        MultipleInputs.addInputPath(job, new Path(args[0]), TextInputFormat.class, AirlinesAirlineMapper.class);
+        MultipleInputs.addInputPath(job, new Path(args[1]),TextInputFormat.class, AirlineRouteMapper.class);
+        Path outputPath = new Path(args[2]);
+
+        FileOutputFormat.setOutputPath(job, outputPath);
+        outputPath.getFileSystem(conf).delete(outputPath);
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
+
+---------------------------------------------------------
+Airlines with Code Share Output - Please check attachment
+---------------------------------------------------------
+
+-----------------------------------------------------------------------------------------------------
+4. Which country (or) territory having highest Airports
+--------------------------------------------------------
+Mapper
+--------
+package com.practice.hadoop.mapreduce.FinalProject.MaxNoAirports;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class MaxNoAirportMapper extends Mapper<LongWritable, Text, Text, Text> {
+    @Override
+    public void map(LongWritable mapKey, Text mapValue ,Context context) throws IOException, InterruptedException {
+        String line = mapValue.toString();
+        String[] countryData = line.split(",");
+        String city = countryData[2];
+        String country = countryData[3];
+        context.write(new Text(country), new Text(city));
+    }
+}
+
+----------
+Reducer
+--------
+package com.practice.hadoop.mapreduce.FinalProject.MaxNoAirports;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class MaxNoAirportReducer extends Reducer<Text, Text, Text, IntWritable> {
+    int maxCount = 0;
+    String Country = null;
+
+    @Override
+    public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+        int count = 0;
+        for(Text text : values){
+            count ++;
+        }
+        if(maxCount < count){
+            Country = key.toString();
+            maxCount = count;
+        }
+
+        //context.write(new Text("Country with Max airport : " + Country), new IntWritable(maxCount));
+    }
+
+    @Override
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+        context.write(new Text("Country with Max airport : " + Country),  new IntWritable(maxCount));
+    }
+}
+
+---------
+Driver
+---------
+package com.practice.hadoop.mapreduce.FinalProject.MaxNoAirports;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+import com.practice.hadoop.mapreduce.FinalProject.IndianAirlines.IndiaAirportMap;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class MaxNoAirportDriver {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration();
+        Job job = new Job(conf, "CountryWithMaxNoAirport");
+
+        job.setJarByClass(MaxNoAirportDriver.class);
+        job.setMapperClass(MaxNoAirportMapper.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(Text.class);
+
+        job.setReducerClass(MaxNoAirportReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        boolean result = job.waitForCompletion(true);
+
+        System.exit(result ? 0 : 1);
+    }
+}
+
+
+----------------------------------------
+Output -- please see attachment as well
+-----------------------------------------
+
+[edureka@localhost shradha]$ hdfs dfs -cat /AirportWithMaxCitiesOutput/part-r-00000
+17/03/17 09:55:21 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Country with Max airport : United States	1697
+
+-----------------------------------------------------------------------------------------------------
+5. Find the list of Active Airlines in United state
+-----------------------------------------------------
+Mapper
+-------
+package com.practice.hadoop.mapreduce.FinalProject.ActiveAirlinesCountries;
+
+import java.io.IOException;
+
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class ActiveAirlinesCountriesMapper extends Mapper<LongWritable, Text, Text, Text>{
+    @Override
+    public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
+        String country, airlineName, active = null;
+        String airlineData = value.toString();
+        String[] airlineDataDetails = airlineData.split(",");
+        airlineName = airlineDataDetails[1];
+        country = airlineDataDetails[6];
+        active = airlineDataDetails[7];
+        if(country.equalsIgnoreCase("United States") && active.equalsIgnoreCase("Y")){
+            context.write(new Text("Active Airline Name"), new Text(airlineName));
+        }
+    }
+}
+
+
+--------
+Driver
+--------
+package com.practice.hadoop.mapreduce.FinalProject.ActiveAirlinesCountries;
+
+import java.io.IOException;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+
+/**
+ * Created by khard on 3/16/17.
+ */
+public class ActiveAirlineDriver {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
+        Configuration conf = new Configuration();
+        Job job = new Job(conf, "USAActiveAirlines");
+
+        job.setJarByClass(ActiveAirlineDriver.class);
+        job.setMapperClass(ActiveAirlinesCountriesMapper.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(Text.class);
+
+        job.setInputFormatClass(TextInputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
+
+        job.setNumReduceTasks(0);
+
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        boolean result = job.waitForCompletion(true);
+
+        System.exit(result ? 0 : 1);
+    }
+}
+
+---------=---------------------
+Output -- attachement
+-------------------------------

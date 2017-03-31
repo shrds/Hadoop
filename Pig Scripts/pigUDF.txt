@@ -1,0 +1,1 @@
+http://www.edureka.co/blog/pig-programming-apache-pig-script-with-udf-in-hdfs-mode/

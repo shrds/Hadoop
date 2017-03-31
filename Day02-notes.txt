@@ -1,0 +1,244 @@
+Hello All, Let us wait for 5 minutes for every one to join.
+
+Day 2:
+------
+Continuation from Slide 16
+
+Agenda:
+------
+Module 01 completion
+
+Recap:
+------
+
+To Handle BigData scenario, people went in 2 directions, what are they?
+	> to Build a Better OS (cluster hardware) 
+	> to Build a Better DataBase (cluster hardware)
+	
+Hadoop falls under which of them? Toward Better OS
+
+What is Hadoop? [Both]
+	> Storage
+	> Processing 
+
+Are we going to learn BigData or Hadoop? Hadoop
+
+if we can challenge hadoop, in which places we can put it? can be kept in any place/role like (DW, ETL, SQL, Storage, etc) except Visualization
+
+Hadoop is a BACKEND.
+
+Adding a new machine to the cluster ? which type of scaling? Horizontal or Scale Out.
+
+Upgrading the existing machine? which type of scaling? Vertical or Scale Up.
+
+Which type of scaling wont hit limitations? Horizontal
+
+How many maximum number of machines can I keep in a hadoop cluster?  10,000 machines
+		> virtuallly unlimited
+
+10,000 => Hadoop 2
+4,000 => Hadoop 1
+
+Is Hadoop is a replacement of existing tech or a complement to it? Complement.
+
+Hadoop?
+	> Storage > HDFS > Hadoop Distributed File System
+	> Processing > YARN > Yet Another Resource Negotiator
+
+Hadoop = HDFS + YARN
+
+Traditional Systems:
+--------------------
+Ex: I asked you to download last 5 years bank statement from your bank's netbanking site? 1 or 2 yr
+
+	=> your data is archived.
+
+	Not entire data is available to access => Not available for analysis
+
+In hadoop we can keep all of it, we dont need to think about archiving.
+
+Why do I need to have old data or all data? which scenarios? 
+
+Ex: will it rain tomorrow? YES or NO, confidence level 50-50
+for the past 10 days its raining, will it rain tomorrow? Mostly Yes [>= 50%]
+
+more past data => better future prediction => predictive analytics
+
+DFS => 1. Scale Out + 2. Prallel Transfers (speedy)
+
+Hadoop 2 = HDFS + YARN
+Hadoop 1 = HDFS + MR (only the name)
+
+Group of people => Organization => Manager and Employee 
+Group of computers => Cluster => Master and Slaves
+
+Slaves => work horses
+Masters => monitor
+
+HDFS => NameNode(master) + DataNode(slave)
+
+YARN => ResourceManager(master) + NodeManager(slave)
+
+What are these NN, DN, RM, NM? They are nothing but LONG RUNNING PROCESS on machines
+
+In a cluster -> some machines are slaves, some are masters
+one master machine will take care of all the slaves.
+
+HDFS => 100 nodes => 1 master + 99 slaves
+HDFS => 1000 nodes => 1 master + 999 slaves
+
+YARN => 1 master + rest all will be slaves
+
+HDFS + YARN => 2 masters + rest are slaves
+
+Does slave machine need to run both slave processes on it? YES
+	=> Data Node and Node Manager
+	=> 1,2 and + => work horses 
+
+Procsses running on machines.
+
+That means; can I run all the processes on one machine? YES ; Pseudo Distribution Mode
+
+HDFS:
+-----
+
+Roles and Responsibilities of these processes (NameNode and DataNode)
+
+File => keep in HDFS => tiny parts => memory chunks => BLOCKS
+
+File (1 GB) => HDFS => 16 BLOCKS (16 parts, each part size is 64 MB) => block size in hadoop1
+File (1 GB) => HDFS => 8 BLOCKS (8 parts, each part size is 128 MB) => block size in hadoop2
+
+Blocks => nothing but data => Data Nodes stores them
+
+Data Node => Store the Blocks => Store the Data
+
+Name Node => Store the mappings => Store the MetaData
+
+Files => many blocks
+Cluster => many datanodes
+
+mapping => file to blocks + blocks to data nodes => metadata
+
+Fault Tolarence => even though few machines[DN] are down, your data is safe 
+
+copies of data in hadoop => 3 copies/replicas of blocks => replication
+
+default replication => 3 
+
+Read:
+----
+
+client(where you run the command) => NameNode (provide the list) => client directly reads from DNs
+
+Student(i need this book) => Library => Librarian (in a particular shelf) => student will fetch
+
+
+$ ls
+a.txt b.txt
+
+$ cat a.txt --> reading
+
+Write:
+------
+
+$ ls
+a.txt b.txt
+
+$ mkdir dummy
+
+$ cp a.txt dummy --> write
+
+local -> hdfs -> transfer 
+hdfs -> once the transfer is done, make replicas, 3
+
+client (write a file) -> NameNode(use these DNs) -> write to them
+
+FILE => a, b, c blocks
+
+transfer => parallel operation
+
+DataNodes responsibility => to make copies
+
+DN1 => a; DN4 => a1 ; DN5 => a2;
+DN2 => b; DN6 => b1; DN7 => b2;
+DN3 => c; DN8 => c1; DN9 => c2;
+
+replication => sequential
+
+Module 01 => Done
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

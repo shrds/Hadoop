@@ -1,0 +1,84 @@
+Hello All, Let us wait for 5 minutes for every one to join
+
+Recap:
+------
+
+What is Hadoop? [Both]
+	> Storage
+	> Processing
+
+What is name of the processsing layer in Hadoop 1?
+	> MapReduce
+
+What is name of the processsing layer in Hadoop 2?
+	> YARN
+
+Which processes are there in HDFS?
+	> NameNode > does > Store MetaData > Master
+	> DataNode > does > Store Data > Slave
+
+Which processes will be there when you look at a Slave machine?
+	> DataNode and NodeManager
+
+What is the cute name given to a computational resource in YARN?
+	> Container
+
+Who will take care of containers in a [particular]machine?
+	> NodeManager
+
+HDFS: FILE => BLOCKS => DataNodes => NameNode
+YARN: Computer => CONTAINERS => NodeManagers => ResourceManager
+
+Which mechanism helps hadoop to be FAULT TOLARENT? [DATA]node failures
+	> Replication
+
+Which mechanism helps hadoop to skip SPOF? Single Point of Failure?
+	> High Availability > with the help of StandBy NameNode
+
+Hadoop Federation is __________ of NameNode?
+	> Horizontal Scaling or Scale Out feature
+
+Continuation:
+-------------
+
+Installation Files:
+
+$HADOOP_HOME/share/hadoop/mapreduce -> examples jar
+
+HDFS:
+-----
+
+$ hdfs dfs -ls /
+$ hdfs dfs -mkdir /
+
+prefix => 'hdfs dfs'
+
+Execution:
+----------
+
+$ hadoop jar <jar-file> <prog-name> <input-path> <output-path> 
+$ hadoop jar /locate/it/<jar-file> <prog-name> <input-path> <output-path> 
+
+prefix => 'hadoop jar'
+
+wordcount => how many time a particular word occured
+
+hadoop-streaming.jar => any other language program
+
+HDFS => imp
+
+input => HDFS => we bring input here => data ingestion
+	diff ways:
+		1. rdbms => sqoop => help to put in hdfs
+		2. webservers/remote location => flume => help to put that in hdfs
+		3. file/folders => put command   
+
+output => HDFS => outcome of an operation => process => analysis
+		diff ways:
+		1. write a MR prog => lot of coding
+		2. use HIVE => a tool => helps you to query hadoop with sql
+		3. use PIG => a tool => helps you to write some analysis commands/help to perform ETL
+
+copy a file from cluster to cluster => distcp
+
+Done with Module 02;

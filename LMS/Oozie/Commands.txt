@@ -1,0 +1,40 @@
+create application
+==================
+
+1. Create a directory for oozie job ( WordCountTest )
+
+2. Write application and create the jar
+   Move this jar to lib folder in WordCountTest directory.
+
+3. job.properties  and workflow.xml inside WordCountTest directory.
+
+4. Move this directory to hdfs.
+
+
+
+To bring Oozie web console in CDH  ( Oozie directory   -- /usr/lib/oozie )
+=====================================================
+1. download ext-2.2.zip
+
+
+2. 
+create oozie user
+
+sudo chown -R oozie:oozie /usr/lib/oozie
+
+If oozie is running stop it
+
+sudo -u oozie bin/oozie-stop.h
+
+3. sudo -u oozie /usr/lib/oozie/bin/oozie-setup.sh -extjs path_to_ext-2.2.zip
+
+4. start -u oozie bin/oozie-start.sh
+
+5. browse http://localhost:11000/oozie
+
+
+3. Running the application
+=========================
+Goto Oozie directory
+
+oozie job -oozie http://localhost:11000/oozie -config job.properties -run

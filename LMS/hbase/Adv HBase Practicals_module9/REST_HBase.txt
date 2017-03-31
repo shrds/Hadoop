@@ -1,0 +1,60 @@
+To run the Rest Server as a deamon, execute bin/hbase-daemon.sh start|stop
+==========================================================================
+sudo bin/hbase-daemon.sh start rest
+[sudo] password for cloudera: 
+-->starting rest, logging to /usr/lib/hbase/bin/../logs/hbase-root-rest-cloudera-vm.out
+
+
+Use curl to verify
+==================
+curl http://localhost:8080/
+-->employee
+
+curl http://localhost:8080/version
+-->rest 0.0.2 [JVM: Sun Microsystems Inc. 1.6.0_24-19.1-b02] [OS: Linux 2.6.35-28-generic i386] [Server: jetty/6.1.26] [Jersey: 1.4]
+
+Finally
+=======
+sudo /usr/lib/hbase/bin/hbase-daemon.sh stop rest
+
+
+REST Java Client
+================
+
+package hbase;
+
+import java.io.IOException;
+
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.ResultScanner;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.rest.client.Client;
+import org.apache.hadoop.hbase.rest.client.Cluster;
+import org.apache.hadoop.hbase.rest.client.RemoteHTable;
+import org.apache.hadoop.hbase.util.Bytes;
+
+public class HRest {
+
+	public static void main(String[] args) throws IOException {
+	Cluster cluster = new Cluster();
+	cluster.add("localhost", 8080);
+	Client client = new Client(cluster);
+	RemoteHTable table = new RemoteHTable(client, "employee");
+	Get get = new Get(Bytes.toBytes("11"));
+	get.addColumn(Bytes.toBytes("personal"), Bytes.toBytes("name"));
+	Result result1 = table.get(get);
+	System.out.println("Get result1: " + result1);
+	Scan scan = new Scan();
+	scan.setStartRow(Bytes.toBytes("11"));
+	scan.setStopRow(Bytes.toBytes("13"));
+	scan.addColumn(Bytes.toBytes("personal"), Bytes.toBytes("name"));
+	ResultScanner scanner = table.getScanner(scan);
+	for (Result result2 : scanner) {
+	System.out.println("Scan row[" + Bytes.toString(result2.getRow()) +
+	"]: " + result2);
+	}
+	}
+	
+}
+

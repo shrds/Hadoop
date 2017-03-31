@@ -1,0 +1,260 @@
+Hello All, Let us wait for 5 mins for everyone to join.
+
+Welcome to Edureka.
+
+Are there any one old students here?
+
+Name, Location, Exp
+
+GoToWebinar Tool -> Audio Issue
+
+Guide Lines:
+-------------
+
+2 hour session, we will have a break after an hour for 10 mins
+
+LMS -> Learning Management System
+
+1. PPTs -> presentations
+2. Study Materials -> Docs assignments, installation, etc
+3. Lab -> VM
+4. Certification, Projects
+5. Videos
+6. Quizes
+7. Java Essentials
+
+Support => ticket/call
+
+Roles and Responsibilites:
+--------------------------
+
+1. Mentor -> Me -> To install the concepts in your head
+2. Student -> You -> Be Regular, Be on Time (5 mins grace time), Do the assignments
+3. Support -> Edureka -> Tech/Non-Tech, syntax errors, use them, they are happy to help you
+
+News:
+-----
+Material, Login, VM Lab, Support -> life time
+Daily course, 3 weeks, 15 session, 2 hours each, Monday to Friday, 10 Modules -> power packed
+1 hour atleast for prctise daily
+
+Please ask the questions in one post.
+
+BigData and Hadoop, What is it that we are going to learn among them? HADOOP
+
+BigData -> we need to understand, as what is it
+Hadoop -> Learn to apply -> course is on this
+
+When there are plenty of resources available online/internet? why are you here?
+	> view point
+	> Interactive, Structured or guided, Short Time for Quick Understanding
+	> many versions, many docs, many components
+
+What is the realtionship between BigData and Hadoop?
+	> BigData -> Domain -> Problem Statement
+	> Hadoop -> Technology -> one of the Solution
+
+SQL, ETL, JAVA, xyz -> some tech, so learning
+DATA -> we do operations on data
+
+BigData -> what is it?
+
+English -> Large Data -> Huge Data -> Big Data -> Synonyms
+
+Quantifiyable way: IBMs 4V model
+
+Volume -> Size
+	- size does matter; >= 10 TB
+	- How it impacts? 10 TB file
+	- 2 TB is the one, get a HDD, use it
+	- HDD is not 10 TB
+	what is your computer hard disk capacity? 
+
+Velocity -> Speed
+	- rate of data inflow
+	- External HDD, it will take year occupy it fully
+	- what happens? out of blue, you came to know that HDD is full in 2 days?
+	- How it impacts? when load is coming suddenly? how to handle.
+	- scalable solution
+	- example, cooking solution at home vs 40 people
+
+Variety -> Specialty
+	- Different Types of data
+	- 2 Types
+		1. Data inside Tables (Structured Data) [data + metadata(schema)]
+		2. Data outside Tables (Unstructured Data) [only data, no meta] we are clue less about the data
+
+		How many times I used the word 'DATA' in this running notes? may be difficult
+		Columns -> messages, how many messages are having the word 'DATA'? 
+			sql> select count(*) from stable where MESSAGES LIKE '%DATA%';
+
+			Unstructure -> not only unreadable (notes, log, emails, sms)
+					unreadable -> media, audio, video, image, binary, etc. -> (little % of organizations will use)
+
+Veracity -> Strentgh
+	- Trust Worthiness of Data, Genunity of Data
+	- How it impacts? it challenging to rely on data at huge volumes.
+	- ex: 5 students in a class, below are the marks
+		[10, 20, 30, 90, 50] -> Highest Mark -> 90 -> looks normal
+		[0, 90, 0, 0, 0] -> Highest Mark -> 90 -> not normal -> why only one guy got huge marks rest all failed? 
+		[90, 90, 90, 90, 90] -> Highest Mark -> 90 -> not normal -> how come every be best?
+
+		is the question asked same? YES
+		is the answer received same? YES
+		is the data used same? NO
+
+		GiGo -> garbage in , garbage out
+
+Data -> Villian -> Gangster
+RDBMS -> Hero -> Cop
+
+BigData -> Big Problem -> 4Vs -> Super Villian -> Joker, Aliens
+Hadoop -> Super Hero -> BatMan, super Man
+
+In the beginning, when people got the bigdata problem?
+	they tried to invent a solution?
+	Direction1: Let us build a Better Computer(OS)
+		ex: hadoop, spark, etc,.
+	Direction2: Let us build a Better DataBase
+		ex: NoSQL, MongoDB, Cassandra, etc
+
+HardWare: both solution focus on cluster hardware
+
+cluster -> a group machines working together -> scale out architecture -> scalable
+
+Vertical Scaling -> upgrade -> limitation
+Horizontal Scaling -> bring another machine -> 
+1 TB machine
+4 TB, needed, 4 machines -> n TB, n machines -> scalable
+
+How Hadoop is going to work? better os.
+
+1 + 2 = 3 ; simple calculation
+
+1,2 -> if i remove them -> will i get result 3 ? NO
++ -> if i remove it -> will i get result 3? NO
+
+1,2 -> Data -> Storage Management -> Cluster -> Distributed Storage -> HDFS
++ -> Operaion -> Process Management -> Cluster -> Distbuted Computing/processing -> YARN
+
+Hadoop => HDFS + YARN
+
+Hadoop -> platform
+pig,hive,etc -> on top of hadoop
+
+MS WINDOWS - os - platform
+MS OFFICE - app - on top of it
+
+HDFS -> Hadoop Distributed File System
+
+Hadoop 2 -> This is the one we are learning
+
+How do you commute to office? Reality show, Can you walk to office? 
+
+	may be you can do it -> you have the ability
+		you wont do it daily -> it is not convenient
+
+hadoop -> is not a replacemet for existign tech -> it is a complement
+hadoop -> can be used in any where except visualization
+
+we are at slide 16 done.
+
+HomeWork:
+---------
+By Thursday (Day 4)
+Finish VM setup
+Finish LINUX Commands
+Finish JAVA ESSENTIALS Course
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,166 @@
+Hello All, Let us wait for 5 mins for everyone to join.
+
+Day 3:
+------
+
+Agenda => will start Mod 02.
+
+Recap:
+------
+
+What is Hadoop? [Both]
+	> Storage
+	> Processing 
+
+When you call a machine a slave machine, what processes does it need to run?
+	> DataNode and NodeManager
+
+What is the block size in hadoop?
+	> 128 MB > Hadoop2
+	> 64 MB > Hadoop1
+
+What is the name of processing layer in Hadoop1?
+	> MapReduce
+
+What does a NameNode do?
+	> Store the metadata + manages the DataNodes
+
+What does a DataNode do?
+	> Store the [actual] Data + [writes the replication copy and aknowledges back]
+
+How many of you are done with Edureka VM setup?
+	> pls do it soon, by Thursday
+
+HDFS Federation: => a feature added in hadoop 2
+----------------
+
+a feature might be used in => future
+
+Cluster is there. size 4 TB
+
+1 TB file => to put => How much space do i need to have in my cluster to put that file?
+	=> 3 TB (replication factor)
+
+balance => 1 TB in cluster
+
+1 TB new file => this needs extra 3 TB, we have only 1 TB
+
+	What to do now? just add new machines[slave] ; scale out; Horizontal; commissioning; no restart
+
+a rare case scenario. What if the metadata out grows the NameNode?
+	what to do now?
+		> Horizontally scale it. bring another machine to take the load.
+
+	there are going to be more than one NameNode, so a chance of confusion, as it is master.
+
+	they sliced the name space and allocated it to the NameNodes
+
+	at High level earlier we have 1 NN => entire file system (same) 
+	at High level later we have few NN => entire file system (same)
+
+NameSpace => the inverted tree structure of file paths
+	Windows => C: or D: starting point
+	Unix/Linux/BSD/MAC etc => / => starting point
+
+	/Cars/old
+	/Cars/new => NN1
+
+	/Bikes/latest
+	/Bikes/trendy => NN2
+
+	/Flights => NN3
+
+	/ => called as root
+
+1 scenario => earlier => NN is taking care from / (root as starting point)
+
+Slice the meta data => assume we have 3 namenodes 
+	NN1 => takes care of meta data =>  /Cars as starting point
+	NN2 => takes care of meta data =>  /Bikes as starting point
+
+Later, if needed
+
+/Ships => NN4
+
+$ cat /cars/old/mercedes/sclass
+
+client => end user => end user system => APP in the end user system => which interacts with cluster
+
+High Availability:
+------------------
+
+Example: You visited a Hotel, You are at a table a waiter arrived
+			you gave him the order with lot of customizations, he left your table toward kitchen
+
+			Where did the waiter noted down your order? NoteBook ; iphone ; ipad ; sticky notes
+
+			the moment he enters the kitchen, he sliped and fell down; uncontious; ambulance ; rest you can imagine
+
+			2 options for the management:
+			1. tell the entire scenario to client and polietly request him to leave 
+			2. behave as if nothing happend, let some other waiter fulfill the request
+
+	2nd option is the right one, expected one.
+
+In the event of waiter 1 unavailability => request handled by waiter 2;
+
+How does the waiter 2 know about the order? He just refered the NoteBook used by waiter1.
+
+Waiter1 => Active NameNode => handles requests
+Waiter2 => StandBy NameNode => observes the situation, make a note of things, jump in the need time
+
+NoteBook => Edit Logs => Shared Location
+
+in Hadoop 1 => No HA => SPOF => single point of failure
+	in Hadoop 2 => HA is there => important feature
+		dont have down time now.
+
+	Secondary NameNode => a bagage from hadoop 1 => misnomer => wrongly named entity
+		SPOF => system restart => hours it will take for complete restart
+				SNN => this will do that pre check up front => start up time will be reduced
+
+HDFS : Files => BLOCKS => DataNodes => NameNode --> easy to memorise
+
+YARN:
+-----
+
+YARN: Computer => CONTAINER => NodeManagers => ResourceManager --> easy to memorise
+
+YARN => ResourceManager(m) + NodeManager(s)
+
+Processing => Computation => Computing
+
+To Process => I need CPU => CPU need RAM => RAM need HDD => [CPU + RAM + HDD]
+
+a computational resource [cpu+ram+hdd]=> CONTAINER => i can do a computation
+
+YARN provides resources for the sake of parallel processing
+
+example: i7 quad core + 4 GB ram + 256 GB HDD
+	4 * [1 core + 1 GB ram + 64 GB HDD ] => 4 containers
+
+NodeManager => which maintains the containers in that particular machine
+ResourceManager => to moniter the entire cluster for the resources(containers) thourgh node manager
+
+Installation Modes:
+-------------------
+
+Psuedo Distributed Mode => all processes run in one machine => a single node cluster
+Fully Distributed Mode => all processes run on many machines => a multi node cluster
+
+Standalone => NO processes runs => NO HDFS and NO YARN
+				=> we have libraries => compilation check can be done
+					=> Linux File System acts as storage, you computer JVM acts for processing
+
+# hadoop 2
+$ hdfs dfs -ls / 
+
+# hadoop 1
+$ hadooop fs -ls /
+
+Need to continue from Slide 31.
+
+HomeWork:
+---------
+Learn Linux Commands => from Module 1 => LMS
+HDFS commands are very easy when you know linux commands

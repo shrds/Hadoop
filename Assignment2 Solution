@@ -1,0 +1,33 @@
+1. I was able to setup Edureka VM and Able to access examples kept on the Desktop Under LMS folder.
+2. Hadoop is installed under /usr/lib/hadoop-2.2.0 directory
+3. All the *-site.xmls are kept under /usr/lib/hadoop-2.2.0/etc/hadoop directory
+4. To check if all the daemons are running or not, I ran sudo jps commond on terminal and able to see all the procsses for NameNode, DataNode, NodeManager etc. The output was somthing like this:
+	11209 RunJar
+	9759 Main
+	1761 DataNode
+	1969 JobHistoryServer
+	1851 ResourceManager
+	11296 RunJar
+	1651 NameNode
+	11794 RunJar
+	1908 NodeManager
+	12843 Jps
+5. The URL to check the NameNode is http://localhost:50070/dfshealth.jsp
+6. command to check HDFS file/ directories
+   --------------------------------------
+   hdfs dfs -ls /
+   
+6. Example location
+   ---------------------
+/usr/lib/hadoop-2.2.0/share/hadoop/mapreduce
+
+7. checking the jar content
+   -----------------------------------
+hadoop jar hadoop-mapreduce-examples-2.2.0.jar
+
+
+8. Running the MapReduce job
+   -----------------------
+hadoop jar hadoop-mapreduce-examples-2.2.0.jar wordcount /input.txt /output
+
+

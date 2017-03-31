@@ -1,0 +1,773 @@
+Create DataBase
+----------------
+hive> create database retail;
+OK
+Time taken: 0.344 seconds
+
+------------
+Use Database
+------------
+hive> use retail;
+OK
+Time taken: 0.021 seconds
+
+--------------
+Create Table
+-------------
+hive> create table txnrecords(txnno INT, txndate STRING, custno INT, amount DOUBLE, 
+    > 
+    > category STRING, product STRING, city STRING, state STRING, spendby STRING)
+    > 
+    > row format delimited
+    > 
+    > fields terminated by ','
+    > 
+    > stored as textfile;
+OK
+Time taken: 0.264 seconds
+
+
+--------------
+Load Table
+------------
+hive> LOAD DATA LOCAL INPATH '/home/edureka/Desktop/LMS/hive/HIVE_Codes/txns' OVERWRITE INTO TABLE txnrecords;
+Copying data from file:/home/edureka/Desktop/LMS/hive/HIVE_Codes/txns
+Copying file: file:/home/edureka/Desktop/LMS/hive/HIVE_Codes/txns
+Loading data to table retail.txnrecords
+rmr: DEPRECATED: Please use 'rm -r' instead.
+Deleted hdfs://localhost:8020/user/hive/warehouse/retail.db/txnrecords
+Table retail.txnrecords stats: [numFiles=1, numRows=0, totalSize=8472073, rawDataSize=0]
+OK
+Time taken: 0.655 seconds
+
+
+---------------
+describe table
+--------------
+hive> select * from txnrecords;
+OK
+Time taken: 0.367 seconds
+hive> describe txnrecords;
+OK
+txnno               	int                 	                    
+txndate             	string              	                    
+custno              	int                 	                    
+amount              	double              	                    
+category            	string              	                    
+product             	string              	                    
+city                	string              	                    
+state               	string              	                    
+spendby             	string              	                    
+Time taken: 0.113 seconds, Fetched: 9 row(s)
+
+
+---------------------
+count no of records
+---------------------
+hive> select count(*) from txnrecords;
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1487559629557_0080, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0080/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0080
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2017-03-13 20:01:01,040 Stage-1 map = 0%,  reduce = 0%
+2017-03-13 20:01:05,294 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.78 sec
+2017-03-13 20:01:11,576 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.43 sec
+MapReduce Total cumulative CPU time: 1 seconds 430 msec
+Ended Job = job_1487559629557_0080
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 1.43 sec   HDFS Read: 8472294 HDFS Write: 6 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 430 msec
+OK
+95904
+
+
+----------------------------------
+Total amount based on Category
+--------------------------------
+hive> select category, SUM(amount) from txnrecords group by category;
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1487559629557_0081, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0081/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0081
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2017-03-13 20:41:03,435 Stage-1 map = 0%,  reduce = 0%
+2017-03-13 20:41:07,620 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.85 sec
+2017-03-13 20:41:12,802 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.49 sec
+MapReduce Total cumulative CPU time: 1 seconds 490 msec
+Ended Job = job_1487559629557_0081
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 1.49 sec   HDFS Read: 8472294 HDFS Write: 463 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 490 msec
+OK
+Air Sports	198022.69999999978
+Combat Sports	320522.98999999923
+Dancing	82189.05999999992
+Exercise & Fitness	1457995.539999998
+Games	714649.0000000001
+Gymnastics	639171.4699999974
+Indoor Games	548311.7800000005
+Jumping	382603.5599999992
+Outdoor Play Equipment	558519.2699999983
+Outdoor Recreation	1643181.6899999955
+Puzzles	118920.77000000016
+Racquet Sports	318226.87999999966
+Team Sports	1190257.39
+Water Sports	1027891.4300000027
+Winter Sports	620769.2199999986
+Time taken: 16.216 seconds, Fetched: 15 row(s)
+
+
+----------------------------------------------------------
+select 10 records for maximum expenses based on category
+-----------------------------------------------------------
+hive> select category, MAX(amount) from txnrecords group by category limit 10;
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1487559629557_0083, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0083/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0083
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2017-03-13 20:43:15,251 Stage-1 map = 0%,  reduce = 0%
+2017-03-13 20:43:20,487 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.87 sec
+2017-03-13 20:43:25,658 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.51 sec
+MapReduce Total cumulative CPU time: 1 seconds 510 msec
+Ended Job = job_1487559629557_0083
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 1.51 sec   HDFS Read: 8472294 HDFS Write: 199 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 510 msec
+OK
+Air Sports	199.98
+Combat Sports	199.96
+Dancing	199.73
+Exercise & Fitness	200.0
+Games	199.9
+Gymnastics	199.93
+Indoor Games	199.95
+Jumping	199.95
+Outdoor Play Equipment	199.98
+Outdoor Recreation	200.0
+Time taken: 16.266 seconds, Fetched: 10 row(s)
+
+
+---------------------------
+Create partitioned table
+---------------------------
+hive> create table txnrecsByCat(txnno INT, txndate STRING, custno INT, amount DOUBLE,
+    > product STRING, city STRING, state STRING, spendby STRING)
+    > partitioned by (category STRING)
+    > clustered by (state) INTO 10 buckets
+    > row format delimited
+    > fields terminated by ','
+    > stored as textfile;
+OK
+Time taken: 0.056 seconds
+
+--------------------------------
+Load Data into Patition Table
+--------------------------------
+hive> from txnrecords txn INSERT OVERWRITE TABLE txnrecsByCat PARTITION(category)
+    > 
+    > select txn.txnno, txn.txndate,txn.custno, txn.amount,txn.product,txn.city,txn.state,
+    > 
+    > txn.spendby, txn.category DISTRIBUTE BY category;
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1487559629557_0084, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0084/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0084
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2017-03-13 20:54:49,906 Stage-1 map = 0%,  reduce = 0%
+2017-03-13 20:54:55,183 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.55 sec
+2017-03-13 20:55:01,432 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 3.27 sec
+MapReduce Total cumulative CPU time: 3 seconds 270 msec
+Ended Job = job_1487559629557_0084
+Loading data to table retail.txnrecsbycat partition (category=null)
+	Loading partition {category=Team Sports}
+	Loading partition {category=Jumping}
+	Loading partition {category=Combat Sports}
+	Loading partition {category=Air Sports}
+	Loading partition {category=Puzzles}
+	Loading partition {category=Exercise & Fitness}
+	Loading partition {category=Dancing}
+	Loading partition {category=Outdoor Recreation}
+	Loading partition {category=Indoor Games}
+	Loading partition {category=Water Sports}
+	Loading partition {category=Gymnastics}
+	Loading partition {category=Racquet Sports}
+	Loading partition {category=Games}
+	Loading partition {category=Winter Sports}
+	Loading partition {category=Outdoor Play Equipment}
+Partition retail.txnrecsbycat{category=Air Sports} stats: [numFiles=10, numRows=0, totalSize=132406, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Combat Sports} stats: [numFiles=10, numRows=0, totalSize=208453, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Dancing} stats: [numFiles=10, numRows=0, totalSize=54574, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Exercise & Fitness} stats: [numFiles=10, numRows=0, totalSize=1046637, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Games} stats: [numFiles=10, numRows=0, totalSize=490503, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Gymnastics} stats: [numFiles=10, numRows=0, totalSize=460746, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Indoor Games} stats: [numFiles=10, numRows=0, totalSize=355895, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Jumping} stats: [numFiles=10, numRows=0, totalSize=273435, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Outdoor Play Equipment} stats: [numFiles=10, numRows=0, totalSize=379276, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Outdoor Recreation} stats: [numFiles=10, numRows=0, totalSize=1114275, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Puzzles} stats: [numFiles=10, numRows=0, totalSize=86165, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Racquet Sports} stats: [numFiles=10, numRows=0, totalSize=204921, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Team Sports} stats: [numFiles=10, numRows=0, totalSize=780437, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Water Sports} stats: [numFiles=10, numRows=0, totalSize=706603, rawDataSize=0]
+Partition retail.txnrecsbycat{category=Winter Sports} stats: [numFiles=10, numRows=0, totalSize=426882, rawDataSize=0]
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 3.27 sec   HDFS Read: 8472294 HDFS Write: 6722327 SUCCESS
+Total MapReduce CPU Time Spent: 3 seconds 270 msec
+OK
+Time taken: 20.134 seconds
+
+
+-------------------------------------
+select 10 records for any category
+-------------------------------------
+hive> select * from txnrecsBycat where category = 'Team Sports'limit 10; 
+OK
+803	01-17-2011	4007314	193.32	Rugby	Paterson	New Jersey	credit	Team Sports
+56544	05-07-2011	4000791	145.38	Curling	Orlando	Florida	credit	Team Sports
+56922	07-18-2011	4000069	173.87	Beach Volleyball	Baltimore	Maryland	credit	Team Sports
+88282	07-08-2011	4007769	103.22	Soccer	Columbus	Ohio	credit	Team Sports
+23033	10-17-2011	4008014	82.53	Soccer	San Antonio	Texas	credit	Team Sports
+32056	04-23-2011	4002269	29.3	Basketball	Gresham	Oregon	cash	Team Sports
+13889	03-25-2011	4006418	90.21	Cheerleading	Lowell	Massachusetts	credit	Team Sports
+32054	12-14-2011	4000304	166.1	Baseball	Charleston	South Carolina	credit	Team Sports
+62544	07-17-2011	4001350	16.78	Softball	Durham	North Carolina	cash	Team Sports
+19146	02-05-2011	4009953	96.8	Team Handball	Jersey City	New Jersey	credit	Team Sports
+Time taken: 0.07 seconds, Fetched: 10 row(s)
+
+
+--------------------------------------
+create customer table
+--------------------------
+hive> create table customer (custono STRING, firstname STRING, age INT, profession STRING, amount DOUBLE, product STRING)
+    > row format delimited
+    > fields terminated by ',';
+OK
+Time taken: 0.039 seconds
+
+
+--------------------------
+Load Customer Table
+---------------------
+hive> LOAD DATA LOCAL INPATH '/home/edureka/Desktop/LMS/hive/hive---advance-hive-codes/custs' INTO TABLE customer;          
+Copying data from file:/home/edureka/Desktop/LMS/hive/hive---advance-hive-codes/custs
+Copying file: file:/home/edureka/Desktop/LMS/hive/hive---advance-hive-codes/custs
+Loading data to table retail.customer
+Table retail.customer stats: [numFiles=1, numRows=0, totalSize=391355, rawDataSize=0]
+OK
+Time taken: 0.177 seconds
+
+
+-----------------------------
+create out1 table
+-----------------------
+hive> create table out1 (custno int,firstname string,age int,profession string,amount double,product string)
+    > 
+    > row format delimited                                                                                  
+    > 
+    > fields terminated by ',';   
+OK
+Time taken: 0.026 seconds
+
+
+-------------------------------------------------------------------
+join customer and txnrecords on custno and insert the data in out1
+-------------------------------------------------------------------
+hive> insert overwrite table out1                                                                           
+    > 
+    > select a.custono,a.firstname,a.age,a.profession,b.amount,b.product                                     
+    > 
+    > from customer a JOIN txnrecords b ON a.custono = b.custno;
+Total jobs = 1
+17/03/14 02:01:42 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+17/03/14 02:01:42 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_02-01-40_537_3783645222828464280-1/-local-10005/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+17/03/14 02:01:42 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_02-01-40_537_3783645222828464280-1/-local-10005/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.min.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.min.split.size.per.node is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.node
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.input.dir.recursive is deprecated. Instead, use mapreduce.input.fileinputformat.input.dir.recursive
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.min.split.size.per.rack is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.rack
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.max.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.maxsize
+17/03/14 02:01:42 INFO Configuration.deprecation: mapred.committer.job.setup.cleanup.needed is deprecated. Instead, use mapreduce.job.committer.setup.cleanup.needed
+Execution log at: /tmp/edureka/edureka_20170314020101_4ff2a1bb-91ce-4b49-ba52-569bd7921c23.log
+2017-03-14 02:01:43	Starting to launch local task to process map join;	maximum memory = 518979584
+2017-03-14 02:01:44	Dump the side-table into file: file:/tmp/edureka/hive_2017-03-14_02-01-40_537_3783645222828464280-1/-local-10002/HashTable-Stage-4/MapJoin-mapfile00--.hashtable
+2017-03-14 02:01:44	Uploaded 1 File to: file:/tmp/edureka/hive_2017-03-14_02-01-40_537_3783645222828464280-1/-local-10002/HashTable-Stage-4/MapJoin-mapfile00--.hashtable (438992 bytes)
+2017-03-14 02:01:44	End of local task; Time Taken: 1.218 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1487559629557_0085, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0085/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0085
+Hadoop job information for Stage-4: number of mappers: 1; number of reducers: 0
+2017-03-14 02:01:49,753 Stage-4 map = 0%,  reduce = 0%
+2017-03-14 02:01:56,018 Stage-4 map = 100%,  reduce = 0%, Cumulative CPU 1.93 sec
+MapReduce Total cumulative CPU time: 1 seconds 930 msec
+Ended Job = job_1487559629557_0085
+Loading data to table retail.out1
+rmr: DEPRECATED: Please use 'rm -r' instead.
+Deleted hdfs://localhost:8020/user/hive/warehouse/retail.db/out1
+Table retail.out1 stats: [numFiles=1, numRows=95892, totalSize=3854411, rawDataSize=3758519]
+MapReduce Jobs Launched: 
+Job 0: Map: 1   Cumulative CPU: 1.93 sec   HDFS Read: 8472294 HDFS Write: 3854486 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 930 msec
+OK
+Time taken: 16.678 seconds
+
+----------------------------------
+10 records from out 1
+----------------------------------
+hive> select * from out1 limit 10;                                                                                                      
+OK
+4007024	Cameron	NULL	59	40.33	Cardio Machine Accessories
+4006742	Gregory	NULL	36	198.44	Weightlifting Gloves
+4009775	Ruby	NULL	44	5.58	Weightlifting Machine Accessories
+4002199	Keith	NULL	44	198.19	Gymnastics Rings
+4002613	Hugh	NULL	43	98.81	Field Hockey
+4007591	Jennifer	NULL	54	193.63	Camping & Backpacking & Hiking
+4002190	Sheryl	NULL	62	27.89	Jigsaw Puzzles
+4002964	Ken	NULL	67	96.01	Sandboxes
+4007361	Terri	NULL	52	10.44	Snowmobiling
+4004798	Geoffrey	NULL	65	152.46	Bungee Jumping
+Time taken: 0.03 seconds, Fetched: 10 row(s)
+
+
+---------------------------------------
+create table out 2
+---------------------------------------
+hive> create table out2 (custno int,firstname string,age int,profession string,amount double,product string, level string)
+    > 
+    > row format delimited                                                                                  
+    > 
+    > fields terminated by ',';  
+OK
+Time taken: 0.024 seconds
+
+
+------------------------------------------------------------------
+load table out2 with out1 and level column with case statement
+------------------------------------------------------------------
+hive> insert overwrite table out2
+    > 
+    > select * , case
+    > 
+    >  when age<30 then 'low'
+    > 
+    >  when age>=30 and age < 50 then 'middle'
+    > 
+    >  when age>=50 then 'old' 
+    > 
+    >  else 'others'
+    > 
+    > end
+    > 
+    > from out1;
+Total jobs = 3
+Launching Job 1 out of 3
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1487559629557_0086, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0086/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0086
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 0
+2017-03-14 02:06:53,152 Stage-1 map = 0%,  reduce = 0%
+2017-03-14 02:06:58,466 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 1.49 sec
+MapReduce Total cumulative CPU time: 1 seconds 490 msec
+Ended Job = job_1487559629557_0086
+Stage-4 is selected by condition resolver.
+Stage-3 is filtered out by condition resolver.
+Stage-5 is filtered out by condition resolver.
+Moving data to: hdfs://localhost:8020/tmp/hive-edureka/hive_2017-03-14_02-06-48_328_8753236407890216525-1/-ext-10000
+Loading data to table retail.out2
+rmr: DEPRECATED: Please use 'rm -r' instead.
+Deleted hdfs://localhost:8020/user/hive/warehouse/retail.db/out2
+Table retail.out2 stats: [numFiles=1, numRows=95892, totalSize=4525655, rawDataSize=4429763]
+MapReduce Jobs Launched: 
+Job 0: Map: 1   Cumulative CPU: 1.49 sec   HDFS Read: 3854630 HDFS Write: 4525730 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 490 msec
+OK
+Time taken: 12.351 seconds
+
+
+-------------------------------------------------
+10 records from out 2 table
+-------------------------------------------------
+hive> select * from out2 limit 10;
+OK
+4007024	Cameron	NULL	59	40.33	Cardio Machine Accessories	others
+4006742	Gregory	NULL	36	198.44	Weightlifting Gloves	others
+4009775	Ruby	NULL	44	5.58	Weightlifting Machine Accessories	others
+4002199	Keith	NULL	44	198.19	Gymnastics Rings	others
+4002613	Hugh	NULL	43	98.81	Field Hockey	others
+4007591	Jennifer	NULL	54	193.63	Camping & Backpacking & Hiking	others
+4002190	Sheryl	NULL	62	27.89	Jigsaw Puzzles	others
+4002964	Ken	NULL	67	96.01	Sandboxes	others
+4007361	Terri	NULL	52	10.44	Snowmobiling	others
+4004798	Geoffrey	NULL	65	152.46	Bungee Jumping	others
+Time taken: 0.021 seconds, Fetched: 10 row(s)
+
+
+
+--------------------------------------------------------
+create table out3 and describe
+--------------------------------------------------------
+hive> create table out3 (level string, amount double)                                                                                   
+    > 
+    > row format delimited
+    > 
+    > fields terminated by ',';
+OK
+Time taken: 0.038 seconds
+hive> desc out3
+    > ;
+OK
+level               	string              	                    
+amount              	double              	                    
+Time taken: 0.06 seconds, Fetched: 2 row(s)
+
+
+-------------------------------------------
+Joins
+---------------
+hive> select * from employee;       
+OK
+swetha	250000.0	Chennai
+anamika	200000.0	Kanyakumari
+tarun	300000.0	Pondi
+anita	250000.0	Selam
+Time taken: 0.02 seconds, Fetched: 4 row(s)
+
+
+hive> select * from email;
+OK
+swetha	swetha@gmail.com
+tarun	tarun@edureka.in
+nagesh	nagesh@yahoo.com
+venkatesh	venki@gmail.com
+Time taken: 0.023 seconds, Fetched: 4 row(s)
+
+
+-------
+simple
+--------
+hive> select a.name, a.salart, a.city, b.emailId  from employee a join email b on a.name = b.name;
+Total jobs = 1
+17/03/14 03:11:41 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+17/03/14 03:11:41 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_03-11-39_595_3526939854334694989-1/-local-10006/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+17/03/14 03:11:41 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_03-11-39_595_3526939854334694989-1/-local-10006/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.min.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.min.split.size.per.node is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.node
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.input.dir.recursive is deprecated. Instead, use mapreduce.input.fileinputformat.input.dir.recursive
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.min.split.size.per.rack is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.rack
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.max.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.maxsize
+17/03/14 03:11:41 INFO Configuration.deprecation: mapred.committer.job.setup.cleanup.needed is deprecated. Instead, use mapreduce.job.committer.setup.cleanup.needed
+Execution log at: /tmp/edureka/edureka_20170314031111_2e86aa4d-b7eb-4857-807e-a1bde558a309.log
+2017-03-14 03:11:42	Starting to launch local task to process map join;	maximum memory = 518979584
+2017-03-14 03:11:42	Dump the side-table into file: file:/tmp/edureka/hive_2017-03-14_03-11-39_595_3526939854334694989-1/-local-10003/HashTable-Stage-3/MapJoin-mapfile20--.hashtable
+2017-03-14 03:11:42	Uploaded 1 File to: file:/tmp/edureka/hive_2017-03-14_03-11-39_595_3526939854334694989-1/-local-10003/HashTable-Stage-3/MapJoin-mapfile20--.hashtable (450 bytes)
+2017-03-14 03:11:42	End of local task; Time Taken: 0.648 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1487559629557_0093, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0093/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0093
+Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 0
+2017-03-14 03:11:47,602 Stage-3 map = 0%,  reduce = 0%
+2017-03-14 03:11:51,757 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 0.61 sec
+MapReduce Total cumulative CPU time: 610 msec
+Ended Job = job_1487559629557_0093
+MapReduce Jobs Launched: 
+Job 0: Map: 1   Cumulative CPU: 0.61 sec   HDFS Read: 318 HDFS Write: 79 SUCCESS
+Total MapReduce CPU Time Spent: 610 msec
+OK
+swetha	250000.0	Chennai	swetha@gmail.com
+tarun	300000.0	Pondi	tarun@edureka.in
+Time taken: 13.211 seconds, Fetched: 2 row(s)
+
+
+---------
+left outer
+------------
+hive> select a.name, a.salart, a.city, b.emailId  from employee a left outer join email b on a.name = b.name;
+Total jobs = 1
+17/03/14 03:12:45 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+17/03/14 03:12:45 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_03-12-42_993_4009809282372232531-1/-local-10006/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+17/03/14 03:12:45 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_03-12-42_993_4009809282372232531-1/-local-10006/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.min.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.min.split.size.per.node is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.node
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.input.dir.recursive is deprecated. Instead, use mapreduce.input.fileinputformat.input.dir.recursive
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.min.split.size.per.rack is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.rack
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.max.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.maxsize
+17/03/14 03:12:45 INFO Configuration.deprecation: mapred.committer.job.setup.cleanup.needed is deprecated. Instead, use mapreduce.job.committer.setup.cleanup.needed
+Execution log at: /tmp/edureka/edureka_20170314031212_32b582b3-7576-4713-9b03-0c27321d85ac.log
+2017-03-14 03:12:45	Starting to launch local task to process map join;	maximum memory = 518979584
+2017-03-14 03:12:46	Dump the side-table into file: file:/tmp/edureka/hive_2017-03-14_03-12-42_993_4009809282372232531-1/-local-10003/HashTable-Stage-3/MapJoin-mapfile31--.hashtable
+2017-03-14 03:12:46	Uploaded 1 File to: file:/tmp/edureka/hive_2017-03-14_03-12-42_993_4009809282372232531-1/-local-10003/HashTable-Stage-3/MapJoin-mapfile31--.hashtable (429 bytes)
+2017-03-14 03:12:46	End of local task; Time Taken: 0.67 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1487559629557_0094, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0094/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0094
+Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 0
+2017-03-14 03:12:51,209 Stage-3 map = 0%,  reduce = 0%
+2017-03-14 03:12:55,377 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 0.58 sec
+MapReduce Total cumulative CPU time: 580 msec
+Ended Job = job_1487559629557_0094
+MapReduce Jobs Launched: 
+Job 0: Map: 1   Cumulative CPU: 0.58 sec   HDFS Read: 309 HDFS Write: 135 SUCCESS
+Total MapReduce CPU Time Spent: 580 msec
+OK
+swetha	250000.0	Chennai	swetha@gmail.com
+anamika	200000.0	Kanyakumari	NULL
+tarun	300000.0	Pondi	tarun@edureka.in
+anita	250000.0	Selam	NULL
+Time taken: 13.44 seconds, Fetched: 4 row(s)
+
+
+---------------------------
+Right Outer Join
+----------------------
+hive> select a.name, a.salart, a.city, b.emailId  from employee a right outer join email b on a.name = b.name;
+Total jobs = 1
+17/03/14 03:13:38 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+17/03/14 03:13:38 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_03-13-36_637_2772981492800279646-1/-local-10006/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+17/03/14 03:13:38 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_03-13-36_637_2772981492800279646-1/-local-10006/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.min.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.min.split.size.per.node is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.node
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.input.dir.recursive is deprecated. Instead, use mapreduce.input.fileinputformat.input.dir.recursive
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.min.split.size.per.rack is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.rack
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.max.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.maxsize
+17/03/14 03:13:38 INFO Configuration.deprecation: mapred.committer.job.setup.cleanup.needed is deprecated. Instead, use mapreduce.job.committer.setup.cleanup.needed
+Execution log at: /tmp/edureka/edureka_20170314031313_c2b225ba-75c5-4ee0-8e37-c8abd3ed8b16.log
+2017-03-14 03:13:39	Starting to launch local task to process map join;	maximum memory = 518979584
+2017-03-14 03:13:39	Dump the side-table into file: file:/tmp/edureka/hive_2017-03-14_03-13-36_637_2772981492800279646-1/-local-10003/HashTable-Stage-3/MapJoin-mapfile40--.hashtable
+2017-03-14 03:13:39	Uploaded 1 File to: file:/tmp/edureka/hive_2017-03-14_03-13-36_637_2772981492800279646-1/-local-10003/HashTable-Stage-3/MapJoin-mapfile40--.hashtable (450 bytes)
+2017-03-14 03:13:39	End of local task; Time Taken: 0.667 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks is set to 0 since there's no reduce operator
+Starting Job = job_1487559629557_0095, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0095/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0095
+Hadoop job information for Stage-3: number of mappers: 1; number of reducers: 0
+2017-03-14 03:13:44,844 Stage-3 map = 0%,  reduce = 0%
+2017-03-14 03:13:49,020 Stage-3 map = 100%,  reduce = 0%, Cumulative CPU 0.59 sec
+MapReduce Total cumulative CPU time: 590 msec
+Ended Job = job_1487559629557_0095
+MapReduce Jobs Launched: 
+Job 0: Map: 1   Cumulative CPU: 0.59 sec   HDFS Read: 318 HDFS Write: 130 SUCCESS
+Total MapReduce CPU Time Spent: 590 msec
+OK
+swetha	250000.0	Chennai	swetha@gmail.com
+tarun	300000.0	Pondi	tarun@edureka.in
+NULL	NULL	NULL	nagesh@yahoo.com
+NULL	NULL	NULL	venki@gmail.com
+Time taken: 13.448 seconds, Fetched: 4 row(s)
+
+
+----------------------
+Full Outer Join
+-------------------
+
+
+
+
+
+----------------------
+nyse stock exchange
+-------------------
+hive> create table nyse (excng String,stock_symbol
+    > String,stock_date String,stock_price_open double, stock_price_high
+    > double, stock_price_low double, stock_price_close double,
+    > stock_volume double, stock_price_adj_close double) row format
+    > delimited fields terminated by ",";
+OK
+Time taken: 0.022 seconds
+
+
+
+hive> describe nyse;
+OK
+excng               	string              	                    
+stock_symbol        	string              	                    
+stock_date          	string              	                    
+stock_price_open    	double              	                    
+stock_price_high    	double              	                    
+stock_price_low     	double              	                    
+stock_price_close   	double              	                    
+stock_volume        	double              	                    
+stock_price_adj_close	double              	                    
+Time taken: 0.058 seconds, Fetched: 9 row(s)
+
+
+------------
+load nyse table
+--------------
+hive> load data local inpath '/home/edureka/Desktop/LMS/hive/Module-7_Assignment_Dataset-Calculating_a_stock\'s_covariance/NYSE_daily_prices_Q.csv' into table nyse;
+Copying data from file:/home/edureka/Desktop/LMS/hive/Module-7_Assignment_Dataset-Calculating_a_stock\'s_covariance/NYSE_daily_prices_Q.csv
+Copying file: file:/home/edureka/Desktop/LMS/hive/Module-7_Assignment_Dataset-Calculating_a_stock's_covariance/NYSE_daily_prices_Q.csv
+Loading data to table retail.nyse
+Table retail.nyse stats: [numFiles=1, numRows=0, totalSize=190216, rawDataSize=0]
+OK
+Time taken: 0.153 seconds
+
+
+-------------------
+read 10 records from nyse
+---------------------------
+hive> select * from nyse limit 10
+    > ;
+OK
+NYSE	QTM	2010-02-08	2.37	2.42	2.29	2.36	3013600.0	2.36
+NYSE	QTM	2010-02-05	2.38	2.5	2.34	2.41	2687600.0	2.41
+NYSE	QTM	2010-02-04	2.57	2.64	2.39	2.46	4529800.0	2.46
+NYSE	QTM	2010-02-03	2.64	2.67	2.55	2.63	2688600.0	2.63
+NYSE	QTM	2010-02-02	2.69	2.76	2.56	2.66	2959700.0	2.66
+NYSE	QTM	2010-02-01	2.6	2.8	2.52	2.67	5050100.0	2.67
+NYSE	QTM	2010-01-29	2.63	2.73	2.26	2.56	1.6484E7	2.56
+NYSE	QTM	2010-01-28	3.09	3.09	2.95	3.06	3986400.0	3.06
+NYSE	QTM	2010-01-27	3.03	3.1	2.99	3.03	2431900.0	3.03
+NYSE	QTM	2010-01-26	3.07	3.18	3.0	3.03	4027600.0	3.03
+Time taken: 0.026 seconds, Fetched: 10 row(s)
+
+
+-----------------------------------
+list all the stock_symbols
+----------------------------
+hive> select distinct(stock_symbol) from nyse;
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1487559629557_0098, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0098/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0098
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2017-03-14 08:01:57,811 Stage-1 map = 0%,  reduce = 0%
+2017-03-14 08:02:01,972 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 0.63 sec
+2017-03-14 08:02:07,130 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 1.21 sec
+MapReduce Total cumulative CPU time: 1 seconds 210 msec
+Ended Job = job_1487559629557_0098
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 1.21 sec   HDFS Read: 190450 HDFS Write: 12 SUCCESS
+Total MapReduce CPU Time Spent: 1 seconds 210 msec
+OK
+QRR
+QTM
+QXM
+Time taken: 14.914 seconds, Fetched: 3 row(s)
+
+
+
+-----------------------------------
+stock covarient
+-----------------
+hive> select a.STOCK_SYMBOL, b.STOCK_SYMBOL, month(a.STOCK_DATE),
+    > (AVG(a.STOCK_PRICE_HIGH*b.STOCK_PRICE_HIGH) -
+    > (AVG(a.STOCK_PRICE_HIGH)*AVG(b.STOCK_PRICE_HIGH)))
+    > from nyse a join nyse b on
+    > a.STOCK_DATE=b.STOCK_DATE where a.STOCK_SYMBOL<b.STOCK_SYMBOL and
+    > year(a.STOCK_DATE)=2008
+    > group by a.STOCK_SYMBOL, b. STOCK_SYMBOL,
+    > month(a.STOCK_DATE);
+Total jobs = 1
+17/03/14 08:06:54 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+17/03/14 08:06:54 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_08-06-52_561_2503036627549727667-1/-local-10007/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+17/03/14 08:06:54 WARN conf.Configuration: file:/tmp/edureka/hive_2017-03-14_08-06-52_561_2503036627549727667-1/-local-10007/jobconf.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.min.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.reduce.tasks.speculative.execution is deprecated. Instead, use mapreduce.reduce.speculative
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.min.split.size.per.node is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.node
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.input.dir.recursive is deprecated. Instead, use mapreduce.input.fileinputformat.input.dir.recursive
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.min.split.size.per.rack is deprecated. Instead, use mapreduce.input.fileinputformat.split.minsize.per.rack
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.max.split.size is deprecated. Instead, use mapreduce.input.fileinputformat.split.maxsize
+17/03/14 08:06:54 INFO Configuration.deprecation: mapred.committer.job.setup.cleanup.needed is deprecated. Instead, use mapreduce.job.committer.setup.cleanup.needed
+Execution log at: /tmp/edureka/edureka_20170314080606_127edbb6-e257-420c-8a02-482d33b87be0.log
+2017-03-14 08:06:55	Starting to launch local task to process map join;	maximum memory = 518979584
+2017-03-14 08:06:56	Dump the side-table into file: file:/tmp/edureka/hive_2017-03-14_08-06-52_561_2503036627549727667-1/-local-10004/HashTable-Stage-2/MapJoin-mapfile50--.hashtable
+2017-03-14 08:06:56	Uploaded 1 File to: file:/tmp/edureka/hive_2017-03-14_08-06-52_561_2503036627549727667-1/-local-10004/HashTable-Stage-2/MapJoin-mapfile50--.hashtable (22033 bytes)
+2017-03-14 08:06:56	End of local task; Time Taken: 1.11 sec.
+Execution completed successfully
+MapredLocal task succeeded
+Launching Job 1 out of 1
+Number of reduce tasks not specified. Estimated from input data size: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1487559629557_0100, Tracking URL = http://localhost:8088/proxy/application_1487559629557_0100/
+Kill Command = /usr/lib/hadoop-2.2.0/bin/hadoop job  -kill job_1487559629557_0100
+Hadoop job information for Stage-2: number of mappers: 1; number of reducers: 1
+2017-03-14 08:07:01,127 Stage-2 map = 0%,  reduce = 0%
+2017-03-14 08:07:06,332 Stage-2 map = 100%,  reduce = 0%, Cumulative CPU 1.1 sec
+2017-03-14 08:07:12,556 Stage-2 map = 100%,  reduce = 100%, Cumulative CPU 2.2 sec
+MapReduce Total cumulative CPU time: 2 seconds 200 msec
+Ended Job = job_1487559629557_0100
+MapReduce Jobs Launched: 
+Job 0: Map: 1  Reduce: 1   Cumulative CPU: 2.2 sec   HDFS Read: 190450 HDFS Write: 567 SUCCESS
+Total MapReduce CPU Time Spent: 2 seconds 200 msec
+OK
+QRR	QTM	1	-0.13994965986395158
+QRR	QTM	2	2.060000000021489E-4
+QRR	QTM	3	0.0029300000000027637
+QRR	QXM	1	-0.015941496598614435
+QRR	QXM	2	0.005124999999992497
+QRR	QXM	3	-0.013358000000010861
+QTM	QXM	1	-0.003653287981865816
+QTM	QXM	2	-0.026352500000005108
+QTM	QXM	3	0.006056999999994872
+QTM	QXM	4	0.027271074380168514
+QTM	QXM	5	0.026688662131521212
+QTM	QXM	6	0.05287052154194427
+QTM	QXM	7	0.02312603305785199
+QTM	QXM	8	0.022061224489798192
+QTM	QXM	9	0.059760317460316514
+QTM	QXM	10	0.0035079395085060305
+QTM	QXM	11	0.018371745152354624
+QTM	QXM	12	-0.0038603305785122055
+Time taken: 21.04 seconds, Fetched: 18 row(s)
+
+

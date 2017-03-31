@@ -1,0 +1,244 @@
+Hello All, Let us wait for 5 mins for everyone to join
+
+Day - 05:
+---------
+
+Agenda -> Module 03 -> Very Important
+
+Mostly it is all about MapReduce.
+
+Recap:
+------
+
+What is the name of processing layer in Hadoop? YARN
+
+What are the master processes available in Hadoop? NameNode and ResourceManager
+
+How NameNode SPOF situation is Handled? Through HA using StandBy
+
+How many machines does a Hadoop 2 cluster can have? 10,000 machines
+
+What is the tiny unit of a computational resource in Hadoop? CONTAINER
+
+What is the tiny unit of storage in Hadoop? BLOCK
+
+Who[which process] provides containers? Node Manager 
+
+What is MapReduce?
+	> it is a style of parallel programming [using a technique we know generally]
+		Style is same in BOTH
+	> it is the name of processing layer in Hadoop1
+		MR => Hadoop1
+		YARN => Hadoop2
+	> it is the name of the library/package/jar in hadoop [we refer them while code]
+		MRv1 => package "mapred"
+		MRv2 => package "mapreduce" => Hadoop2
+
+Example: sum of one million numbers
+--------
+
+Let us assume that we are living in CAVE days, no technologies
+	no computers, no automation
+	no maths, no shortcuts
+
+I know how to do the below fun stuff, but it is a matter of time to reach 1 million
+
+1
+2			3
+3			6
+4			10
+5			15
+.
+.
+.
+1Million	XXXX
+1,000,000 - US notation
+10,00,000 - IND notation
+
+How much time do you need to provide me the value of XXXX? 
+	=> some Days => 10 Days
+
+Take some pleasure in inviting your friends and ask them for help, you chose 10 people (including you). There are 10 persons now.
+	=> 1 person => 10 Days
+	=> 10 persons => 1 Day
+
+Start the work - I told
+Your friends are looking at you - give them the work
+10 Lakhs and 10 Persons => distributing 1 Lakh Per Friend
+Your friends got the numbers/load => now what? => they need to add like above fashion
+
+MAP: a LOGIC applied on the DIVIDED data to produce INTERMEDIATE results. [logic => add]
+
+Map Phase: where MAP is applied/used
+----------
+0 	to 		1L => p1 => add => res1
+1L1 to 		2L => p2 => add => res2
+2L1 to 		3L => p3 => add => res3
+.
+.
+9L1 to 		10L => p10 => add => res10
+
+Where are we? are we done? did we get the XXXX value? NO, still something is pending
+
+REDUCE: a LOGIC applied on the intermediate data to produce a final AGGREGATED result[logic => add]
+
+Reduce Phase: where REDUCE is applied/used
+-------------
+Need to aggregate the results.
+	=> sum of all the individual results
+
+	res1 + res2 + res3 + .. + .. + res10 => XXXX => RESULT
+
+WE ARE DONE, And what we did is noting but MAP-REDUCE
+
+MapReduce(style of program) => one word made of 2 words => MAP(function) and REDUCE(function)
+
+MAP or REDUCE => they are nothing but LOGICs; 
+map is a logic
+reduce is a logic
+
+File => HDFS => Divided into BLOCKS => inherently division is by design
+
+What is aggregation? a way/method/tranformation/ which takes multiple values as input
+						and produce single/one value as output
+
+what are the aggregation functions you used in sql? sum, avg, min, max, count
+
+1,2,3 => sum => 3
+1,2,3 => min => 1
+1,2,3 => max => 3
+1,2,3 => count => 3
+1,2,3 => avg => 2
+
+multiple values => aggregation => one value
+
+Example: Love Example
+-------
+Friend: teach me some tips and tricks in loving someone
+You: go and watch some love story movies
+Friend: tell me the names
+	You: got a movie list(1 million) from IMDB, english movies
+			short list love story movies
+
+			algorithm => on how to short list
+			You: if the movie name has a word like LOVE then its love story -> simple one
+
+			I LOVE YOU -> short listed
+			LOVE STORY -> short listed
+			TITANIC -> skips
+
+Map Logic: search and filter the movies with LOVE keyword
+Reduce Logic: consolidating 10 lists into 1 list
+
+Example: Max Temperature
+--------
+
+----------input.txt (1 million)
+ladjfaljfaldfjasldjflaksdfalksdjlaksdjf2015lkajdflasjfalsjflasdjfalksj36flasdjflk
+ladjfaljfaldfjasldjflaksdfalksdjlaksdjf2015lkajdflasjfalsjflasdjfalksj36flasdjflk
+ladjfaljfaldfjasldjflaksdfalksdjlaksdjf2015lkajdflasjfalsjflasdjfalksj39flasdjflk
+.
+.
+ladjfaljfaldfjasldjflaksdfalksdjlaksdjf2015lkajdflasjfalsjflasdjfalksj40flasdjflk
+ladjfaljfaldfjasldjflaksdfalksdjlaksdjf2015lkajdflasjfalsjflasdjfalksj36flasdjflk
+
+-------output.txt
+2015		40
+
+Way1:
+-----
+Map: extract YEAR an TEMPERATURE
+Reduce:  compute Max Temperature out of all
+
+Way2:
+-----
+Map: extract YEAR an TEMPERATURE, at each friend level do the MAX also
+Reduce:  compute Max Temperature out of 10 MAXes
+
+Example: De-Identify Health Data [sensitive, age and email]
+-------
+
+--------------input.txt
+siva, 34, fever, 10 days, siva@gmail.com
+.
+.
+priyanka, 30, cold, 2 days, priya30@gmail.com
+
+----------output.txt
+siva, XX, fever, 10 days, abc@xyz.com
+.
+.
+priyanka, XX, cold, 2 days, abc@xyz.com
+
+Map: encrypt the records
+Reduce: put them in one list
+
+** At this level we are very good with MAP and REDUCE concept **
+-------------------------------------------------------------------------------------------------
+How Hadoop Helps?
+	1 + 2  = 3; my computer can help me to do the "+" opeation
+	It provides a computational resource for my operation(+)
+
+what are the computational resources => containers => Node Managers control them
+
+With Respect to Map-Reduce?
+	How many operations I have? logics to be done/performed? 2 logics(1 for map, 1 for reduce)
+		minimum I need 2 containers
+			1st container => map logic
+			2nd container => reduce logic
+
+*****APPLICATION-Master**** also a deamon (short life) "is a process" this too needs a container
+
+	=> launches and monitors the job (MR)
+		=> progress and completion
+
+1 million summation:: JOB
+10 map tasks + 1 reduce task => 11 container + 1 (application-master)
+
+JOB => divided into tasks(2 types, map or reduce) => 
+
+****YARN-CHILD**** also a deamon (is a process), this is the one which performs the task
+
+task => map or reduce
+who performs it => a process => yarn child [higher one , job level progress, AM]
+where it performs => a container => a computational resource [higher one, RM for entire cluster]
+
+*****--*****
+Application-Master and Yarn-Child(s) are a set in job execution perspective.
+Resource-Manager and Node-Manager are a set in resource allocation perspective.
+
+Name-Node and Data-Node are a set in data storage perspective.
+*****--*****
+
+Hadoop1:
+	JobTracker => all in one => 4,000 machines
+		=> schedule the resources
+		=> launches and monitors the progress of job
+		=> stores the history of job
+
+Hadoop2: 10k machines
+		RM => schedule the resources
+		AM => launches and monitors the progress of job
+		JH => stores the history of job
+
+Today:
+-----
+1. Happy with Map Reduce Concepts with 4 examples
+2. Job Execution with YARN architecture (intro Application Master + Yarn Child)
+	RM, AM, NM and YC
+3. Hadoop 1 vs Hadoop 2 => Processing Part => roles and responcibilities
+						JobTracker vs RM + AM
+
+Next:
+-----
+4. Application of this Map Reduce using Key-Value mechanism
+5. Convert that into Java Code
+from slide 30, to start.
+
+Home Work:
+----------
+Finish Java Essentials at any cost
+Module 3 => watch and perform the tiny video - imp
+Please execute WordCount by your selves [as per video + as per command line]
+Please go through this entire session one more time
+Try to see and feel the code of WordCount, VM path 

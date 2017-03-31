@@ -1,0 +1,16 @@
+in/edureka/mapreduce/WordSize_WordCount$Reduce.class
+in/edureka/mapreduce/Patent$Map.class
+in/edureka/mapreduce/AlphabetCount$Reduce.class
+in/edureka/mapreduce/WordSize_WordCount$Map.class
+in/edureka/mapreduce/WordCount$Map.class
+in/edureka/mapreduce/Test.class
+in/edureka/mapreduce/WordCount.class
+in/edureka/mapreduce/AlphabetCount.class
+in/edureka/mapreduce/Patent.class
+in/edureka/mapreduce/PatientSubPatientCount$Map.class
+in/edureka/mapreduce/PatientSubPatientCount$Reduce.class
+in/edureka/mapreduce/AlphabetCount$Map.class
+in/edureka/mapreduce/WordCount$Reduce.class
+in/edureka/mapreduce/WordSize_WordCount.class
+in/edureka/mapreduce/PatientSubPatientCount.class
+in/edureka/mapreduce/Patent$Reduce.class
